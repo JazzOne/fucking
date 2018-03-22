@@ -2,7 +2,7 @@
   <div class="home">
     <y-header>
       <img src="@/assets/logo.png" slot="left" width="30" height="30">
-      <y-tabs style="width: 200px;" :tabs="headerTabs" slot="area"></y-tabs>
+      <y-tabs style="width: 200px;" :tabs="headerTabs" slot="area" @change="changeMain"></y-tabs>
       <!--<div slot="area" style="width: 200px; height: 30px; background: #000">hahahah</div>-->
     </y-header>
   </div>
@@ -17,7 +17,12 @@ export default {
   },
   data () {
     return {
-      headerTabs: [{name: '1'}, {name: '1'}, {name: '1'}],
+      headerTabs: [{name: '空气监测'}, {name: '水质监测'}],
+    }
+  },
+  methods: {
+    changeMain(index) {
+      console.log(this.headerTabs[index].name)
     }
   }
 }
