@@ -1,0 +1,10 @@
+[padding] {
+    box-sizing: border-box;
+    padding: 20px 20px;
+}
+
+[card] {
+    background: #275482;
+    box-shadow: 4px 0 20px #03406E;
+    margin-top: 20px;
+}
