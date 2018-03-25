@@ -5,24 +5,31 @@
       <y-tabs style="width: 200px;" :tabs="headerTabs" slot="area" @change="changeMain"></y-tabs>
       <!--<div slot="area" style="width: 200px; height: 30px; background: #000">hahahah</div>-->
     </y-header>
+
+    
+    
   </div>
 </template>
 
 <script>
 import yTabs from '@/components/global/y-tabs';
+import yPopup from '@/components/global/y-popup';
 export default {
   name: 'home',
   components: {
-    yTabs
+    yTabs,
+    yPopup
   },
   data () {
     return {
       headerTabs: [{name: '空气监测'}, {name: '水质监测'}],
+      isShow: false,
     }
   },
   methods: {
     changeMain(index) {
       console.log(this.headerTabs[index].name)
+      this.isShow = !this.isShow
     }
   }
 }
