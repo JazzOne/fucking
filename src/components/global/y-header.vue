@@ -53,7 +53,7 @@ export default {
         position: absolute;
         top: 0;
         bottom: 0;
-        width: 60px;
+        width: 70px;
         /*line-height: 70px;*/
         display: flex;
         align-items: center;

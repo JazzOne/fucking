@@ -11,6 +11,7 @@ export default {
 </script>
 
 <style>
+@import './assets/global.css';
 * {
   padding: 0;
   margin: 0;

@@ -21,11 +21,15 @@ export default {
       currentIndex: 0
     };
   },
+  watch: {
+    tabs() {
+      this.currentIndex = 0;
+    }
+  },
   methods: {
     clickTab(index) {
       this.currentIndex = index;
-      // console.log(index)
-      this.$emit('change', index)
+      this.$emit('change', this.currentIndex)
     }
   }
 }
@@ -41,6 +45,8 @@ export default {
   .tabs .tab {
     flex: 1;
     color: #fff;
+    font-size: 30px;
+    text-align: center;
   }
   .tabs .tab.active {
     background-color: #fff;
@@ -48,7 +54,11 @@ export default {
     border-radius: 27px;    
   }
   .tabs .tab.active.dark {
-    background-color: #000;
+    background: rgba(255, 255, 255, .3);
     color: #fff;
+    /* font-size: 30px; */
   }
+  .tabs .tab.dark {
+    font-size: 26px;
+  } 
 </style>

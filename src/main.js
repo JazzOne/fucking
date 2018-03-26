@@ -10,6 +10,11 @@ Vue.config.productionTip = false
 import yHeader from '@/components/global/y-header'
 Vue.component('yHeader', yHeader)
 
+// 引入第三方库
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
+
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
