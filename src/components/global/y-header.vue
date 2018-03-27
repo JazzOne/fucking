@@ -41,6 +41,7 @@ export default {
     .y-header .y-header-title {
         line-height: 70px;
         font-size: 30px;
+        color: #fff;
     }
     .y-header .y-header-area {
         position: absolute;

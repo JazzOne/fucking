@@ -31,6 +31,9 @@ export default {
       this.currentIndex = index;
       this.$emit('change', this.currentIndex)
     }
+  },
+  mounted() {
+    this.$emit('change', this.currentIndex)
   }
 }
 </script>
@@ -54,7 +57,7 @@ export default {
     border-radius: 27px;    
   }
   .tabs .tab.active.dark {
-    background: rgba(255, 255, 255, .3);
+    background: rgba(255, 255, 255, .1);
     color: #fff;
     /* font-size: 30px; */
   }

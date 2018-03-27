@@ -1,21 +1,43 @@
 <template>
-    <div id="myChart"></div>
+    <div class="chart-container">
+        <div class="title">
+            <div class="left">
+                <div v-if="!$slots.left">
+                    <img src="@/assets/icon/time-icon.png" alt="">
+                    <span>24小时监控</span>  
+                </div>  
+                <slot name="left"></slot>
+            </div> 
+            <div class="right">
+                <span v-if="!$slots.right">首要污染物：PM2.5</span>    
+                <slot name="right"></slot>
+            </div>
+        </div>
+        <div class="myChart"></div>
+    </div>
+    
 </template>
 
 <script>
 export default {
     name: 'echart-line',
+    props: {
+        data: String
+    },
     data() {
         return {
 
         }
+    },
+    created() {
+        console.log(this.data)
     },
     mounted() {
         this.drawLine()
     },
     methods: {
         drawLine() {
-            let myChart = this.$echarts.init(document.getElementById('myChart'))
+            let myChart = this.$echarts.init(document.querySelector('.myChart'))
             let option = {
                 dataZoom: [
                     {
@@ -123,8 +145,26 @@ export default {
 </script>
 
 <style scoped>
-    #myChart {
+    .chart-container {
         width: 100%;
         height: 100%;
+    }
+    .title {
+        padding: 20px 27px;
+        font-size: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #ccc;
+        border-bottom: 1px solid rgba(255, 255, 255, .3);
+    }
+    .title .left {
+        display: flex;
+        align-items: center;
+    }
+    .title .left img { margin-right: 15px; width: 26px; height: 26px; }
+
+    .myChart {
+        height: 450px;
     }
 </style>

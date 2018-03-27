@@ -81,6 +81,7 @@ export default {
         font-size: 8vw;
         font-weight: 500;
         padding: 0 9.9997px;
+        border-radius: 8px;
     }
 
     .dashboard .list {
