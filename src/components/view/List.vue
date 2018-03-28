@@ -5,13 +5,14 @@
         <span>{{$route.query.name}}<span style="font-size: 3.4667vw;">(52在线)</span></span>
         <img src="@/assets/logo.png" slot="right" width="25" height="25">
       </y-header>
-
-      <cell v-for="n in 10" :key="n" @click.native="goDetail(n)"></cell>
+      <!--<div class="scroll-content"></div>-->
+      <cell v-for="n in 20" :key="n" @click.native="goDetail(n)"></cell>
   </div>
 </template>
 
 <script>
 import cell from '@/components/simple/cell';
+import api from '@/api/api'
 export default {
     name: 'list',
     components: {
@@ -33,10 +34,15 @@ export default {
         }
     },
     created() {
+        
         // console.log(this.$route.query.name)
     }
 }
 </script>
 
 <style scoped>
+    .list {
+        height: 100%;
+        overflow: scroll;
+    }
 </style>

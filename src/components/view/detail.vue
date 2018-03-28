@@ -65,9 +65,12 @@ export default {
         goDetail(cell) {      
             let params = this.$route.params;
             this.$router.push({
-                path: cell.url
+                path: cell.url,
+                query: params
             });
         }
+    },
+    created() {
     }
 }
 </script>

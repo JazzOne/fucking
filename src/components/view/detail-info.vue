@@ -17,7 +17,7 @@
         <div class="swiper-pagination" slot="pagination"></div>
     </swiper>
 
-    <div class="info" card>
+    <div class="info" card >
         <div cell>
             <span>站点名称</span>
             <span>重庆XX水质站</span>
@@ -78,10 +78,16 @@ export default {
             },
         }
     },
+    computed: {
+        
+    },
     methods: {
         routerBack() {
             this.$router.back()
         }
+    },
+    created() {
+        
     }
 }
 </script>
