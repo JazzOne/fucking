@@ -5,8 +5,11 @@
         <span>{{$route.query.name}}<span style="font-size: 3.4667vw;">(52在线)</span></span>
         <img src="@/assets/logo.png" slot="right" width="25" height="25">
       </y-header>
-
-      <cell v-for="n in 10" :key="n" @click.native="goDetail(n)"></cell>
+    
+      <div class="list-container">
+        <cell v-for="n in 10" :key="n" @click.native="goDetail(n)"></cell>
+      </div>
+      
   </div>
 </template>
 
@@ -39,4 +42,8 @@ export default {
 </script>
 
 <style scoped>
+    .list-container {
+        height: 1200px;
+        overflow: scroll;
+    }
 </style>
