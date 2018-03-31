@@ -11,15 +11,17 @@
     <y-chart :currentChart="childTabs[childIndex].type" card></y-chart>
     
     <dashboard></dashboard>
-
+  
     <!-- 底部菜单 -->
     <div class="navbar" card>
       <div class="nav">
+        <router-link :to="{path: '/gis', query: { name: 'gis' } }">
         <img class="icon" :src='require("@/assets/icon/gis-icon.png")' alt="">
         <p>GIS</p>
+        </router-link>
       </div>
       <div class="nav">
-        <router-link :to="{path: '/list/water', query: { name: '水质站' } }">
+        <router-link :to="{path: '/list/water', query: { name: '2' } }">
           <img class="icon" :src='require("@/assets/icon/water-icon.png")' alt="">
           <p>水质站</p>
         </router-link>
@@ -31,7 +33,7 @@
         </router-link>
       </div>
       <div class="nav">
-        <router-link :to="{path: '/list/company', query: { name: '污染企业' } }">
+        <router-link :to="{path: '/list/company', query: { name: '1' } }">
           <img class="icon" :src='require("@/assets/icon/company-icon.png")' alt="">
           <p>污染企业</p>
         </router-link>
@@ -84,17 +86,33 @@ export default {
     changeMain(index) {
       this.childIndex = 0;
       this.headerIndex = index;
-      console.group('切换大菜单')
-      console.log(`加载${this.headerTabs[index].name}页`)
-      console.log(`默认渲染子选项卡的第一个：`, this.childTabs[this.childIndex])   
-      console.groupEnd() 
+      // console.group('切换大菜单')
+      // console.log(`加载${this.headerTabs[index].name}页`)
+      // console.log(`默认渲染子选项卡的第一个：`, this.childTabs[this.childIndex])   
+      // console.groupEnd() 
     },
     changeChild(index) {
       this.childIndex = index;
-      console.group('切换小菜单')
-      console.log(`已切换, 渲染${this.childTabs[index].name}图表`, this.childTabs[index])
-      console.groupEnd()
+      // console.group('切换小菜单')
+      // console.log(`已切换, 渲染${this.childTabs[index].name}图表`, this.childTabs[index])
+      // console.groupEnd()
+    },
+
+    getDashboard() {
+      let url = 'http://172.21.92.143:8080';
+      this.$http.post(`${url}/airinfo/getaqi`,{
+        years:"2018",
+        month:"3",
+        day:"21",
+        areaCode:"2"
+      }).then(res => {
+        console.log(res)
+      })
     }
+  },
+  created() {
+    this.getDashboard()
+  
   }
 }
 </script>
@@ -115,13 +133,10 @@ export default {
   .navbar {
     width: 710px;
     height: 200px;
-    /* overflow: hidden; */
-    /* font-size: 0; */
     display: flex;
     align-items: center;
   }
   .navbar .nav {
-    /* display: inline-block; */
     text-align: center;
     width: 25%;
     font-size: 24px;

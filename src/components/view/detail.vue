@@ -7,7 +7,7 @@
              height="25" 
              slot="left" 
              @click="routerBack">
-        <span>重庆XX站</span>
+        <span>{{detail.name}}</span>
         <img src="@/assets/logo.png" slot="right" width="25" height="25">
     </y-header>
 
@@ -41,6 +41,7 @@ export default {
     },
     data(){
         return {
+            detail: {},
             // 轮播配置
             swiperOption: {
                 pagination: {
@@ -53,7 +54,7 @@ export default {
                 { text: '实时数据', url: '/realtime' },
                 { text: '站点视频', url: '' },
                 { text: '统计', url: '/table' },
-                { text: '报警', url: '' },
+                { text: '报警', url: '/warn' },
                 { text: '现场', url: '' }
             ],
         }
@@ -63,11 +64,27 @@ export default {
             this.$router.back()
         },
         goDetail(cell) {      
-            let params = this.$route.params;
+            // console.log(this.detail)
+            this.detail.type = this.$route.params.type;
+            this.detail.id = this.$route.params.detail_id;
             this.$router.push({
-                path: cell.url
+                path: cell.url,
+                query: this.detail
             });
+        },
+        // 获取企业详情信息
+        getDetail() {
+            let params = this.$route.params;
+
+            this.$http.get(`http://172.21.92.215:8080/enterpiseInfo/info/${params.type}/${params.detail_id}`)
+                .then(res => {
+                    // console.log(res.data)
+                    this.detail = res.data;
+                })
         }
+    },
+    created() {
+        this.getDetail()
     }
 }
 </script>

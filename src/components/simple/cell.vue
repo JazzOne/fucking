@@ -5,15 +5,15 @@
       </div>
       <div class="right">
           <div>
-            <p class="hd">重庆有线公司</p>
-            <p class="desc">所属行业：冶金行业</p>
+            <p class="hd">{{list.name}}</p>
+            <p class="desc">所属{{type == '1' ? '行业' : '类别'}}：{{list.industryName ? list.industryName : '--'}}</p>
           </div>
           
 
           <div class="foot">
               <span>设备状态：正常</span>  
-              <span class="status on">
-                  在线 
+              <span class="status" :class="list.state">
+                  {{list.state == 'on' ? '在线' : '离线'}}
               </span>
           </div>
       </div>
@@ -22,7 +22,15 @@
 
 <script>
 export default {
-    name: 'cell'
+    name: 'cell',
+    props: {
+        type: {
+            type: String
+        },
+        list: {
+            type: Object
+        }
+    }
 }
 </script>
 

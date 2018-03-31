@@ -2,11 +2,16 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/view/Home'
 
+import Gis from '@/components/view/Gis'
+
 import List from '@/components/view/List' 
 import Detail from "@/components/view/detail"
 import DetailInfo from '@/components/view/detail-info'
 import DetailReal from '@/components/view/detail-realtime'
 import DetailTable from '@/components/view/detail-table'
+import DetailWarn from '@/components/view/detail-waring'
+import SearchPage from '@/components/global/search-page'
+
 
 Vue.use(Router)
 
@@ -16,6 +21,11 @@ export default new Router({
       path: '/',
       name: 'Home',
       component: Home
+    },
+    {
+      path: '/gis',
+      name: 'gis',
+      component: Gis
     },
     {
       path: '/list/:type',
@@ -39,6 +49,16 @@ export default new Router({
     {
       path: '/table',
       component: DetailTable
+    },
+    // 警报
+    {
+      path: '/warn',
+      component: DetailWarn
+    },
+    // 搜索
+    {
+      path: '/search',
+      component: SearchPage
     }
     
   ]

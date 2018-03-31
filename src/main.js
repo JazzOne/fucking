@@ -15,6 +15,14 @@ import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
 
 
+// 引入ajax库
+// import axios from 'axios'
+// Vue.prototype.$http = axios
+
+import fetch from '@/axios/service'
+Vue.prototype.$service = fetch;
+
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
