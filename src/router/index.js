@@ -4,7 +4,7 @@ import Home from '@/components/view/Home'
 
 import Gis from '@/components/view/Gis'
 
-import List from '@/components/view/List' 
+import List from '@/components/view/List'
 import Detail from "@/components/view/detail"
 import DetailInfo from '@/components/view/detail-info'
 import DetailReal from '@/components/view/detail-realtime'
@@ -12,6 +12,7 @@ import DetailTable from '@/components/view/detail-table'
 import DetailWarn from '@/components/view/detail-waring'
 import SearchPage from '@/components/global/search-page'
 
+import map from '@/components/view/map'
 
 Vue.use(Router)
 
@@ -59,7 +60,12 @@ export default new Router({
     {
       path: '/search',
       component: SearchPage
+    },
+    // 搜索
+    {
+      path: '/map',
+      component: map
     }
-    
+
   ]
 })
