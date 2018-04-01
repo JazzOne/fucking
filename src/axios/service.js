@@ -42,7 +42,6 @@ const fetch = {
                 areaCode: "2",
                 length: String(size)
             }).then(res => {
-                console.log('空气质量AQI：', res.data)
                 resolve(res.data)
             });
 

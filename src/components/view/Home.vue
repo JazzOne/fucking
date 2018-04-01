@@ -5,12 +5,12 @@
       <y-tabs class="switch" :tabs="headerTabs" slot="area" @change="changeMain"></y-tabs>
       <img src="@/assets/logo.png" slot="right" width="25" height="25">
     </y-header>
-    
+
     <y-tabs class="childSwitch" dark :tabs="childTabs" @change="changeChild"></y-tabs>
-    
+
     <y-chart :currentChart="childTabs[childIndex].type" card></y-chart>
     
-    <dashboard :datas="dashboards" :isAir="false"></dashboard>
+    <dashboard :datas="dashboards" :isAir="headerIndex"></dashboard>
 
     <!-- 底部菜单 -->
     <div class="navbar" card>
@@ -27,7 +27,7 @@
         </router-link>
       </div>
       <div class="nav">
-        <router-link :to="{path: '/list/air', query: { name: '空气站' } }">
+        <router-link :to="{path: '/list/air', query: { name: '3' } }">
           <img class="icon" :src='require("@/assets/icon/air-icon.png")' alt="">
           <p>空气站</p>
         </router-link>
@@ -84,52 +84,66 @@ export default {
       }
     }
   },
+  watch: {
+    headerIndex(val, oldVal) {
+      if(val == 0) {
+        this.$service.getDashBoard().then((res) => {
+          let obj = {}
+          obj = {
+            rank: res.rank,
+            day: res.day,
+            avg: res.avg[0]
+          };
 
+          this.$service.getAQI().then(res => {
+            obj.areaPm = res[0].areaPm;
+
+            this.dashboards = obj
+            console.log(this.dashboards)
+          });
+        });
+
+      }else {
+
+        this.$http.post('http://172.21.92.62:8080/waterinfo/getcqwipm', {
+          "years":"2018",
+          "month":"3",
+          "areaId":"3"
+        }).then(res => {
+          console.log(res)
+        });
+      }
+    }
+  },
   methods: {
     changeMain(index) {
       this.childIndex = 0;
       this.headerIndex = index;
-      console.log(index)
-      // console.group('切换大菜单')
-      // console.log(`加载${this.headerTabs[index].name}页`)
-      // console.log(`默认渲染子选项卡的第一个：`, this.childTabs[this.childIndex])   
-      // console.groupEnd() 
     },
     changeChild(index) {
       this.childIndex = index;
-      // console.group('切换小菜单')
-      // console.log(`已切换, 渲染${this.childTabs[index].name}图表`, this.childTabs[index])
-      // console.groupEnd()
     },
 
+    // 首页主面板内容
     getDashboard() {
-      
-      this.$service.getDashBoard().then((res) => {
-        let obj = {};
+        this.$service.getDashBoard().then((res) => {
+          let obj = {}
+          obj = {
+            rank: res.rank,
+            day: res.day,
+            avg: res.avg[0]
+          };
 
-        console.log(res)
-        obj = {
-          rank: res.rank,
-          day: res.day,
-          avg: res.avg[0]
-        };
+          this.$service.getAQI().then(res => {
+            obj.areaPm = res[0].areaPm;
 
-        this.$service.getAQI().then(res => {
-          obj.areaPm = res[0].areaPm;
-
-          this.dashboards = obj
-
-          console.log('Home', this.dashboards)
-        })
-        
-
-
-        
-      })      
-      
+            this.dashboards = obj
+          });
+        });
     }
   },
   created() {
+    // 默认加载空气检测
     this.getDashboard()
   }
 }
@@ -146,7 +160,7 @@ export default {
   .childSwitch {
     margin: 20px 0;
   }
-  
+
   /* 底部菜单 */
   .navbar {
     width: 710px;
@@ -164,7 +178,7 @@ export default {
     width: 90px;
     height: 100px;
   }
-  
+
 
 
 </style>

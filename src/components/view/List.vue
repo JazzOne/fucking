@@ -5,12 +5,12 @@
         <span>{{title}}<span style="font-size: 3.4667vw;">(52在线)</span></span>
         <img src="@/assets/logo.png" slot="right" width="25" height="25">
       </y-header>
-      
+
       <y-search @filter="filterShow = true"></y-search>
 
       <div class="list-container">
-        <cell v-for="(item, index) in lists" 
-              :key="index" 
+        <cell v-for="(item, index) in lists"
+              :key="index"
               :list="item"
               :type="$route.query.name"
               @click.native="goDetail(item)"></cell>
@@ -28,7 +28,7 @@
                               :key="index"
                               @click="clickFilter(index)">{{list.text}}</span>
                     </div>
-                </div>   
+                </div>
             </div>
             <div pop-footer> <span class="submit-btn">确认</span> </div>
           </div>
@@ -45,7 +45,7 @@ import yPopup from '@/components/global/y-popup';
 export default {
     name: 'list',
     components: {
-        cell, 
+        cell,
         ySearch,
         yPopup
     },
@@ -64,7 +64,7 @@ export default {
     computed: {
         title() {
             switch(this.$route.query.name) {
-                case "2": 
+                case "2":
                     return '水质站'
                 break;
                 case "1":
@@ -81,6 +81,7 @@ export default {
         goDetail(item) {
             let type = this.$route.query.name,
                 detail_id = item.id;
+            localStorage.setItem('id',detail_id)
             this.$router.push(`/list/${type}/detail/${detail_id}`)
         },
 
@@ -93,14 +94,27 @@ export default {
                 this.lists = res.data;
             })
         },
+      // 获取空气站列表
+        getAtmosphereList() {
+          let url = this.url
+          this.$http.get(url+'/GIS/air/details',{ params:{
 
+          }})
+          .then(res => {
+
+          })
+        },
         clickFilter(index) {
             this.currentIndex = index;
         }
     },
     created() {
         // console.log(this.$route.query.name)
+      if(this.$route.query.name == 3){
+        this.getAtmosphereList()
+      }else {
         this.getList()
+      }
     }
 }
 </script>
@@ -110,5 +124,5 @@ export default {
         height: 1100px;
         overflow: scroll;
     }
-    
+
 </style>

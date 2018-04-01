@@ -1,28 +1,29 @@
 <template>
-    <div class="chart-container">
+    <div class="chart-container" :datalist="datalist" :time="time">
         <div class="title">
             <div class="left">
                 <div v-if="!$slots.left">
                     <img src="@/assets/icon/time-icon.png" alt="">
-                    <span>24小时监控</span>  
-                </div>  
+                    <span>24小时监控</span>
+                </div>
                 <slot name="left"></slot>
-            </div> 
+            </div>
             <div class="right">
-                <span v-if="!$slots.right">首要污染物：PM2.5</span>    
+                <span v-if="!$slots.right">首要污染物：PM2.5</span>
                 <slot name="right"></slot>
             </div>
         </div>
-        <div class="myChart"></div>
+        <div class="myChart" ></div>
     </div>
-    
+
 </template>
 
 <script>
 export default {
     name: 'echart-line',
     props: {
-        data: String
+      datalist: Array,
+      time:Array
     },
     data() {
         return {
@@ -77,7 +78,7 @@ export default {
                     right: 10,
                     bottom: 40
                 },
-                xAxis: { 
+                xAxis: {
                     type: 'category',
                     boundaryGap: false,
                     splitLine:{
@@ -96,20 +97,20 @@ export default {
                         opacity: 0.3
                     }
                     },
-                    data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                    data: this.time,
                 },
                 yAxis: {
                     show: false,
                     type: 'value',
-                    // min: 0,
-                    // max: 150,
+//                     min: 0,
+//                     max: 150,
                     // interval: 50,
                     splitLine:{
                         show: false,
                     },
                 },
                 tooltip: {
-                    
+
                     formatter: 'AQI: {c} 重度',
                     backgroundColor: '#fff',
                     textStyle: {
@@ -123,7 +124,7 @@ export default {
                     },
                 },
                 series: [{
-                    data: [50, 100, 75, 60, 125, 35, 20, 60, 125, 35],
+                    data: this.datalist,
                     type: 'line',
                     symbol: 'image://' + require('@/assets/icon/dot.png'),
                     symbolSize: 15,
@@ -138,7 +139,8 @@ export default {
                 }]
             };
             myChart.setOption(option);
-        }
+            console.log(this.time)
+        },
     }
 }
 </script>

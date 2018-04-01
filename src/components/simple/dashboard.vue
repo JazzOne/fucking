@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard" card>
 
-    <template v-if="isAir">
+    <template v-if="isAir == 0">
         <div class="main">
             <div>
                 <span class="title">{{datas.areaPm}}</span>
@@ -48,14 +48,14 @@
         </div>
     </template>
 
-    <template v-else>
+    <template v-if="isAir == 1">
         <div class="main">
             <div>
-                <span style="font-size: 30vw">万林镇断面</span>
+                <span style="font-size: 4.5vw; color: #ff2a89; font-weight: bold;">万林镇断面</span>
                 <p style="padding: 2vw">超标断面</p>
                 </div>
                 <div>
-                <span style="display: block; font-size: 4.8vw; padding: 2.6667vw 0;">COD：70(60)</span>
+                <span style="display: block; font-size: 3.5vw; padding: 2.6667vw 0;">COD：70(60)</span>
                 <p>超标指数</p>
             </div>
         </div>
@@ -106,12 +106,20 @@ export default {
             type: Object
         },
         isAir: {
-            type: Boolean,
-            default: true
+            type: Number,
+            default: 0
+        }
+    },
+    data() {
+        return {
+            
         }
     },
     created() {
-        console.log(this.datas, '=============')
+        
+    },
+    mounted(){
+        
     }
 }
 </script>
