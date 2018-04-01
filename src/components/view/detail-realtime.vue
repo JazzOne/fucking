@@ -6,17 +6,17 @@
       <img src="@/assets/logo.png" slot="right" width="25" height="25">
     </y-header>
 
-    <y-tabs :tabs="tabs" class="menu" @change="changeTab" v-if=" $route.query.type == 'company' "></y-tabs>
+    <y-tabs :tabs="tabs" class="menu" @change="changeTab" v-if=" $route.query.type == '1' "></y-tabs>
 
-    <echartLine card>
-      <span slot="left" style="color: #fff;">COD 3月24日</span>
-      <span slot="right" style="color: #fff;">设备编号:EZH209</span>
+    <echartLine card :datalist="list" :time="time" v-if="listTrue">
+      <span slot="left" style="color: #fff;">{{listtitle.yzName}} {{listtitle.dateTime}}</span>
+      <span slot="right" style="color: #fff;">设备编号:{{listtitle.yzCode}}</span>
     </echartLine>
 
-    
 
-    
-    <template v-if=" $route.query.type !== 'company' ">
+
+
+    <template v-if=" $route.query.type !== '1' ">
       <div card>
         <div cell>
           <span>高锰酸钾指数</span>
@@ -52,19 +52,19 @@
         </div>
       </div>
     </template>
-    <template v-if=" $route.query.type == 'company' && theIndex == 1">
-      <div card>
-        <div cell>
-          <span>开关量</span>
-          <span>1</span>
+    <template v-if=" $route.query.type == '1' && theIndex == 1">
+      <div card v-for="li in listtitle.equipments">
+        <div cell v-for="item in li.yzs">
+          <span>{{item.yzname}}</span>
+          <span>{{item.value}}</span>
         </div>
-        <div cell>
+       <!-- <div cell>
           <span>A相电流</span>
           <span>23.1m³/分</span>
         </div>
         <div cell>
           <span>B相电流</span>
-          <span>--</span>
+          <span>&#45;&#45;</span>
         </div>
         <div cell>
           <span>C相电流</span>
@@ -89,7 +89,7 @@
         <div cell>
           <span>总能耗</span>
           <span>1</span>
-        </div>
+        </div>-->
       </div>
     </template>
     <!-- <template v-if=""></template> -->
@@ -104,14 +104,29 @@ import yTabs from '@/components/global/y-tabs'
 export default {
   name: 'realtime',
   components: {
-    echartLine, 
+    echartLine,
     yTabs
   },
   data(){
     return {
       tabs: [{name: '在线监测'}, {name: '工程监控'}],
       theIndex: 0,
+      listtitle:'',
+      list:[],
+      reals:[],
+      time:[],
+      listTrue:true
     }
+  },
+  created() {
+    this.$nextTick(() => {
+      this.getlistcon()
+    })
+
+
+  },
+  mounted() {
+
   },
   methods: {
     handleback() {
@@ -121,6 +136,35 @@ export default {
       this.theIndex = index;
 
       console.log(this.tabs[index])
+    },
+    getlistcon(){
+      let self = this
+      let params = this.$route.params;
+      function sortNumber(a,b) {
+        return a - b
+      }
+      let id =  localStorage.getItem('id')
+      this.$http.get(`http://172.21.92.215:8080/enterpiseInfo/monitor/1/${id}`)
+        .then(res => {
+          self.listtitle = res.data.data
+          let timeList = []
+          let avg = []
+          self.reals = res.data.data.reals.sort(function (s, t) {
+            var a = s.time;
+            var b = t.time;
+            return a - b
+          })
+          self.reals.forEach((val)=>{
+            timeList.push(Number(val.time))
+            avg.push(Number(val.avg))
+          })
+          self.time = timeList
+          self.list = avg
+          self.listTrue = false
+          setTimeout(()=>{
+            self.listTrue = true
+          },10)
+        })
     }
   }
 }
