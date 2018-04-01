@@ -1,12 +1,12 @@
 <template>
   <div class="detail-infomation" padding>
-    
+
     <y-header>
-        <img src="@/assets/icon/back-icon.png" 
-             class="backbtn" 
-             width="25" 
-             height="25" 
-             slot="left" 
+        <img src="@/assets/icon/back-icon.png"
+             class="backbtn"
+             width="25"
+             height="25"
+             slot="left"
              @click="routerBack">
         <span>基本信息</span>
         <img src="@/assets/logo.png" slot="right" width="25" height="25">
@@ -88,7 +88,7 @@
                     <span>纬度</span>
                     <span>29.12456</span>
                 </div>
-            </div>  
+            </div>
             <div card v-else-if="index == 1">
                 <div cell>
                     <span>排污许可证编号</span>
@@ -98,19 +98,19 @@
                     <span>有效时间</span>
                     <span v-if="book.beginDate || book.endDate">{{book.beginDate}}至{{book.endDate}}</span>
                     <span v-else>----</span>
-                </div>     
+                </div>
                 <div cell>
                     <span>单位时间最大排放量</span>
                     <span v-if="book.maxiMum">{{book.maxiMum}}吨</span>
                     <span v-else>----</span>
-                </div>   
+                </div>
                 <div style="font-size: 3.467vw;padding: 4vw; color: #fff;" v-if="book.attachmentAddress">
                     <span>排污许可证附页</span>
                     <div class="pictures">
-                        <img :src="img" 
+                        <img :src="img"
                              v-for="(img, idx) in book.attachmentAddress"
                              :key="idx">
-                        
+
                     </div>
                 </div>
             </div>
@@ -125,7 +125,7 @@
             </div>
         </div>
     </template>
-    <template v-else-if="$route.query.type == '2'">
+    <template v-else-if="$route.query.type == '2' || $route.query.type == '3'">
         <div class="info" card >
             <div cell>
                 <span>站点名称</span>
@@ -135,7 +135,7 @@
                 <span>站点类型</span>
                 <span>重庆XX水质站</span>
             </div>
-            <div cell>
+            <div cell v-if="$route.query.type != '3'">
                 <span>所属流域</span>
                 <span>{{infos.riverBasin}}</span>
             </div>
@@ -165,7 +165,6 @@
             </div>
         </div>
     </template>
-
   </div>
 </template>
 
@@ -191,8 +190,8 @@ export default {
             },
             // tab选项
             tabs: [
-                {name: '企业基本信息'}, 
-                {name: '排污许可证'}, 
+                {name: '企业基本信息'},
+                {name: '排污许可证'},
                 {name: '工艺流程图'}
             ],
             index: 0,
@@ -263,14 +262,14 @@ img {
     .pictures {
         text-align: center;
         margin: 0 auto;
-        padding: 30px 0;   
-        width: 510px; 
+        padding: 30px 0;
+        width: 510px;
     }
     .pictures img {
         display: block;
         width: 100%;
         height: 100%;
-        
+
     }
 
 </style>

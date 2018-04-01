@@ -1,11 +1,11 @@
 <template>
   <div class="detail" padding>
     <y-header>
-        <img src="@/assets/icon/back-icon.png" 
-             class="backbtn" 
-             width="25" 
-             height="25" 
-             slot="left" 
+        <img src="@/assets/icon/back-icon.png"
+             class="backbtn"
+             width="25"
+             height="25"
+             slot="left"
              @click="routerBack">
         <span>{{detail.name}}</span>
         <img src="@/assets/logo.png" slot="right" width="25" height="25">
@@ -15,11 +15,11 @@
         <swiper-slide v-for="(n, i) in 3" :key="i">Slide {{n}}</swiper-slide>
         <div class="swiper-pagination" slot="pagination"></div>
     </swiper>
-    
+
     <div class="cells" card>
-        <div class="cell" 
-             v-for="(cell, index) in cellList" 
-             :key="index" 
+        <div class="cell"
+             v-for="(cell, index) in cellList"
+             :key="index"
              @click="goDetail(cell)">
             <img class="icon" :src="require('@/assets/icon/detail_icon_' + (index+1) + '.png' )">
             <span class="text">{{cell.text}}</span>
@@ -63,7 +63,7 @@ export default {
         routerBack() {
             this.$router.back()
         },
-        goDetail(cell) {      
+        goDetail(cell) {
             // console.log(this.detail)
             this.detail.type = this.$route.params.type;
             this.detail.id = this.$route.params.detail_id;
@@ -76,11 +76,22 @@ export default {
         getDetail() {
             let params = this.$route.params;
 
+          if(params.type == 3){
+            let url = this.url
+            this.$http.get(url+'/GIS/air/one/details',{ params:{
+              id:params.detail_id
+            }})
+              .then(res => {
+                this.detail = res.data.data;
+              })
+          }else {
             this.$http.get(`http://172.21.92.215:8080/enterpiseInfo/info/${params.type}/${params.detail_id}`)
-                .then(res => {
-                    // console.log(res.data)
-                    this.detail = res.data;
-                })
+              .then(res => {
+                // console.log(res.data)
+                this.detail = res.data;
+              })
+          }
+
         }
     },
     created() {

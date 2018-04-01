@@ -81,6 +81,9 @@ export default {
         goDetail(item) {
             let type = this.$route.query.name,
                 detail_id = item.id;
+            if(type == 3){
+              detail_id = item.baseEnterpriseId;
+            }
             localStorage.setItem('id',detail_id)
             this.$router.push(`/list/${type}/detail/${detail_id}`)
         },
@@ -90,18 +93,15 @@ export default {
             var type = this.$route.query.name;
             this.$service.getEnterpiseList(type).then(res => {
                 // 当前企业列表
-                console.log('当前企业列表 ================> ', res.data)
                 this.lists = res.data;
             })
         },
       // 获取空气站列表
         getAtmosphereList() {
           let url = this.url
-          this.$http.get(url+'/GIS/air/details',{ params:{
-
-          }})
+          this.$http.get(url+'/GIS/air/details',{ params:{}})
           .then(res => {
-
+            this.lists = res.data.data;
           })
         },
         clickFilter(index) {
