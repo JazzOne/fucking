@@ -1,49 +1,99 @@
 <template>
   <div class="dashboard" card>
-    <div class="main">
-        <div>
-            <span class="title">261</span>
-            <p style="padding: 2vw">AQI<span>中度污染</span></p>
-            </div>
+
+    <template v-if="isAir">
+        <div class="main">
             <div>
-            <span style="display: block; font-size: 4.8vw; padding: 2.6667vw 0;">PM2.5</span>
-            <p>主要污染物</p>
-        </div>
-    </div>
-
-    <div class="list">
-        <div class="item">
-            <span text-left>
-                <p style="font-size: 3.7333vw">渝西13区县排名</p>
-                <p style="font-size: 2.9333vw">上月排名：10</p>
-            </span>
-            <span text-right>
-                <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">10</span> / 13
-            </span>
-        </div>
-        
-        <div class="item">
-            <span text-left>
-                <p style="font-size: 3.7333vw">优良天数</p>
-                <p style="font-size: 2.9333vw;">剩余天数：232</p>
-            </span>
-            <span text-right>
-                <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">14</span> / 259
-            </span>
+                <span class="title">{{datas.areaPm}}</span>
+                <p style="padding: 2vw">AQI<span>中度污染</span></p>
+                </div>
+                <div>
+                <span style="display: block; font-size: 4.8vw; padding: 2.6667vw 0;">PM2.5</span>
+                <p>主要污染物</p>
+            </div>
         </div>
 
-        <div class="item">
-            <span text-left>
-                <p style="font-size: 3.7333vw;">PM2.5年均浓度</p>
-                <p style="font-size: 2.9333vw;">单位：um/G³</p>
-            </span>
-            <span text-right>
-                <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">123</span> / 56
-            </span>
-        </div>
-        
+        <div class="list">
+            <div class="item">
+                <span text-left>
+                    <p style="font-size: 3.7333vw">渝西13区县排名</p>
+                    <p style="font-size: 2.9333vw">上月排名：{{datas.rank}}</p>
+                </span>
+                <span text-right>
+                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">{{datas.rank}}</span> / 13
+                </span>
+            </div>
+            
+            <div class="item">
+                <span text-left>
+                    <p style="font-size: 3.7333vw">优良天数</p>
+                    <p style="font-size: 2.9333vw;">剩余天数：{{datas.day.restDays}}</p>
+                </span>
+                <span text-right>
+                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">{{datas.day.gooddays}}</span> / {{datas.day.targetdays}}
+                </span>
+            </div>
 
-    </div>
+            <div class="item">
+                <span text-left>
+                    <p style="font-size: 3.7333vw;">PM2.5年均浓度</p>
+                    <p style="font-size: 2.9333vw;">单位：um/G³</p>
+                </span>
+                <span text-right>
+                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">{{datas.avg.areaPm}}</span> / {{datas.avg.target}}
+                </span>
+            </div>
+            
+
+        </div>
+    </template>
+
+    <template v-else>
+        <div class="main">
+            <div>
+                <span style="font-size: 30vw">万林镇断面</span>
+                <p style="padding: 2vw">超标断面</p>
+                </div>
+                <div>
+                <span style="display: block; font-size: 4.8vw; padding: 2.6667vw 0;">COD：70(60)</span>
+                <p>超标指数</p>
+            </div>
+        </div>
+
+        <div class="list">
+            <div class="item">
+                <span text-left>
+                    <p style="font-size: 3.7333vw">水质CQWI排名</p>
+                    <p style="font-size: 2.9333vw">上月排名：{{datas.rank}}</p>
+                </span>
+                <span text-right>
+                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">{{datas.rank}}</span> / 13
+                </span>
+            </div>
+            
+            <div class="item">
+                <span text-left>
+                    <p style="font-size: 3.7333vw">地表水达标率</p>
+                    <p style="font-size: 2.9333vw;">累计达标率：100%</p>
+                </span>
+                <span text-right>
+                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">100%</span>
+                </span>
+            </div>
+
+            <div class="item">
+                <span text-left>
+                    <p style="font-size: 3.7333vw;">饮用水达标率</p>
+                    <p style="font-size: 2.9333vw;">累计达标率：100%</p>
+                </span>
+                <span text-right>
+                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">100%</span>
+                </span>
+            </div>
+            
+
+        </div>
+    </template>
 
   </div>
 </template>
@@ -51,7 +101,18 @@
 <script>
 export default {
     name: 'dashboard',
-
+    props: {
+        datas: {
+            type: Object
+        },
+        isAir: {
+            type: Boolean,
+            default: true
+        }
+    },
+    created() {
+        console.log(this.datas, '=============')
+    }
 }
 </script>
 

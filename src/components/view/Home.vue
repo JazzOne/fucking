@@ -10,8 +10,8 @@
     
     <y-chart :currentChart="childTabs[childIndex].type" card></y-chart>
     
-    <dashboard></dashboard>
-  
+    <dashboard :datas="dashboards" :isAir="false"></dashboard>
+
     <!-- 底部菜单 -->
     <div class="navbar" card>
       <div class="nav">
@@ -40,8 +40,6 @@
       </div>
     </div>
 
-
-    
     
   </div>
 </template>
@@ -52,6 +50,8 @@ import yChart from '@/components/complex/charts/y-chart-container';
 import dashboard from '@/components/simple/dashboard';
 
 import yPopup from '@/components/global/y-popup';
+
+import { getPmAvg } from '../../axios/service'
 
 export default {
   name: 'home',
@@ -68,6 +68,9 @@ export default {
       headerIndex: 0,
       // AQI || 空气质量 || 优良天数 || PM2.5  ...
       childIndex: 0,
+
+      // 首页主面板数据
+      dashboards: { }
 
     }
   },
@@ -86,6 +89,7 @@ export default {
     changeMain(index) {
       this.childIndex = 0;
       this.headerIndex = index;
+      console.log(index)
       // console.group('切换大菜单')
       // console.log(`加载${this.headerTabs[index].name}页`)
       // console.log(`默认渲染子选项卡的第一个：`, this.childTabs[this.childIndex])   
@@ -99,20 +103,34 @@ export default {
     },
 
     getDashboard() {
-      let url = 'http://172.21.92.143:8080';
-      this.$http.post(`${url}/airinfo/getaqi`,{
-        years:"2018",
-        month:"3",
-        day:"21",
-        areaCode:"2"
-      }).then(res => {
+      
+      this.$service.getDashBoard().then((res) => {
+        let obj = {};
+
         console.log(res)
-      })
+        obj = {
+          rank: res.rank,
+          day: res.day,
+          avg: res.avg[0]
+        };
+
+        this.$service.getAQI().then(res => {
+          obj.areaPm = res[0].areaPm;
+
+          this.dashboards = obj
+
+          console.log('Home', this.dashboards)
+        })
+        
+
+
+        
+      })      
+      
     }
   },
   created() {
     this.getDashboard()
-  
   }
 }
 </script>

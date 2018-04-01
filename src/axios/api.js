@@ -33,7 +33,9 @@ const ajax = {
                     reject(error)
                  })
         })
-    }
+    },
+
+    
 }
 
 Vue.prototype.$http = ajax
