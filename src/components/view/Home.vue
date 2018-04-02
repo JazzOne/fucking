@@ -8,7 +8,7 @@
 
     <y-tabs class="childSwitch" dark :tabs="childTabs" @change="changeChild"></y-tabs>
 
-    <y-chart :currentChart="childTabs[childIndex].type" card></y-chart>
+    <y-chart :currentChart="childTabs[childIndex].type" card :data="dashboards"></y-chart>
     
     <dashboard :datas="dashboards" :isAir="headerIndex"></dashboard>
 
@@ -103,16 +103,52 @@ export default {
           });
         });
 
-      }else {
+      }else { 
 
+        setTimeout(() => {
+          
+        
+        // 排名
         this.$http.post('http://172.21.92.62:8080/waterinfo/getcqwipm', {
           "years":"2018",
           "month":"3",
           "areaId":"3"
         }).then(res => {
-          console.log(res)
+          this.dashboards.rank = res.data.data.pm;
         });
-      }
+
+        // 超标指数
+        this.$http.post('http://172.21.92.62:8080/waterinfo/getchaobiaoyz', {
+          "mn":"98333426611001"
+        }).then(res => {
+          this.dashboards.zhishu = res.data.data
+          // console.log(res.data.data)
+        })
+        
+        // 
+        this.$http.post('http://172.21.92.62:8080/waterinfo/getwaterrate', [{
+          years: "2018",
+          month: "3",
+          areaId: "1",
+          type: "1"  // 地表水（1） 饮用水（2）
+        }]).then(res => {
+            this.dashboards.dbs = res.data.data[0].dbsRate;
+
+        })
+
+        // 
+        this.$http.post('http://172.21.92.62:8080/waterinfo/getwaterrate', [{
+          years: "2018",
+          month: "3",
+          areaId: "1",
+          type: "2"  // 地表水（1） 饮用水（2）
+        }]).then(res => {
+          this.dashboards.yys = res.data.data[0].dbsRate;
+        })
+
+        }, 50);
+      };
+      
     }
   },
   methods: {

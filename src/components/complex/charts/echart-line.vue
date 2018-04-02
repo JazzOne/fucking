@@ -21,10 +21,11 @@
 <script>
 export default {
     name: 'echart-line',
-    props: {
-      datalist: Array,
-      time:Array
-    },
+    props: ['datalist', 'time'],
+    // {
+    //   datalist: Array,
+    //   time:Array
+    // },
     data() {
         return {
 

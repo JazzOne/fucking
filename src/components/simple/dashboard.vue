@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard" card>
-
+      
     <template v-if="isAir == 0">
         <div class="main">
             <div>
@@ -55,7 +55,7 @@
                 <p style="padding: 2vw">超标断面</p>
                 </div>
                 <div>
-                <span style="display: block; font-size: 3.5vw; padding: 2.6667vw 0;">COD：70(60)</span>
+                <span style="display: block; font-size: 3.5vw; padding: 2.6667vw 0;">{{datas.zhishu ? datas.zhishu : '无'}}</span>
                 <p>超标指数</p>
             </div>
         </div>
@@ -74,20 +74,20 @@
             <div class="item">
                 <span text-left>
                     <p style="font-size: 3.7333vw">地表水达标率</p>
-                    <p style="font-size: 2.9333vw;">累计达标率：100%</p>
+                    <p style="font-size: 2.9333vw;">累计达标率：{{datas.dbs}}%</p>
                 </span>
                 <span text-right>
-                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">100%</span>
+                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">{{datas.dbs}}%</span>
                 </span>
             </div>
 
             <div class="item">
                 <span text-left>
                     <p style="font-size: 3.7333vw;">饮用水达标率</p>
-                    <p style="font-size: 2.9333vw;">累计达标率：100%</p>
+                    <p style="font-size: 2.9333vw;">累计达标率：{{datas.yys}}%</p>
                 </span>
                 <span text-right>
-                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">100%</span>
+                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">{{datas.yys}}%</span>
                 </span>
             </div>
             

@@ -1,8 +1,9 @@
 <template>
   <div class="y-chart-container">
       <!-- 未交互 -->
+      <!-- datalist -->
       <!-- <keep-alive>   -->
-        <component :is="currentChart" :data="demoData"></component>
+        <component :is="currentChart" :datalist="data"></component>
       <!-- </keep-alive> -->
     
   </div>
@@ -38,7 +39,11 @@ export default {
         currentChart: {
             type: String, 
             default: 'aqi'
+        },
+        data: {
+            type: Object
         }
+
     },
     computed: {
         
