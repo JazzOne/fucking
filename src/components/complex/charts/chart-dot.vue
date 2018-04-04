@@ -9,7 +9,14 @@
             <span href="javascript: void(0)" class="calendarBtn">3月</span>
         </div>
     </div>
-    <div class="myChart"></div>
+    <div class="myChart">
+        <!-- <ul>
+            <li>1</li>
+            <li>2</li>
+            <li>3</li>
+            <li>4</li>
+        </ul> -->
+    </div>
   </div>
 </template>
 
@@ -50,5 +57,11 @@ export default {
         background: rgba(255, 255, 255, .3);
         color: #fff;
     }
+    
 
+    /* .myChart ul {
+        display: flex;
+    }
+    .myChart
+     */
 </style>

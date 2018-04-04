@@ -1,10 +1,11 @@
 <template>
   <div class="dashboard" card>
       
-    <template v-if="isAir == 0">
+    <template v-if="type == 0">
+        
         <div class="main">
             <div>
-                <span class="title">{{datas.areaPm}}</span>
+                <span class="title">{{datas.pm}}</span>
                 <p style="padding: 2vw">AQI<span>中度污染</span></p>
                 </div>
                 <div>
@@ -27,10 +28,10 @@
             <div class="item">
                 <span text-left>
                     <p style="font-size: 3.7333vw">优良天数</p>
-                    <p style="font-size: 2.9333vw;">剩余天数：{{datas.day.restDays}}</p>
+                    <p style="font-size: 2.9333vw;">剩余天数：{{datas.restDays}}</p>
                 </span>
                 <span text-right>
-                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">{{datas.day.gooddays}}</span> / {{datas.day.targetdays}}
+                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">{{datas.gooddays}}</span> / {{datas.targetdays}}
                 </span>
             </div>
 
@@ -40,7 +41,7 @@
                     <p style="font-size: 2.9333vw;">单位：um/G³</p>
                 </span>
                 <span text-right>
-                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">{{datas.avg.areaPm}}</span> / {{datas.avg.target}}
+                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">{{datas.areaPm}}</span> / {{datas.targetPm}}
                 </span>
             </div>
             
@@ -48,18 +49,20 @@
         </div>
     </template>
 
-    <template v-if="isAir == 1">
+    <template v-if="type == 1">
         <div class="main">
             <div>
                 <span style="font-size: 4.5vw; color: #ff2a89; font-weight: bold;">万林镇断面</span>
                 <p style="padding: 2vw">超标断面</p>
                 </div>
                 <div>
-                <span style="display: block; font-size: 3.5vw; padding: 2.6667vw 0;">{{datas.zhishu ? datas.zhishu : '无'}}</span>
+                <span style="display: block; font-size: 3.5vw; padding: 2.6667vw 0;">
+                    <span v-if="datas.zsName && datas.realValue ">{{datas.zsName}}: {{datas.realValue}}({{datas.standerValue}})</span>
+                    <span v-else>无</span>
+                </span>
                 <p>超标指数</p>
             </div>
         </div>
-
         <div class="list">
             <div class="item">
                 <span text-left>
@@ -74,20 +77,20 @@
             <div class="item">
                 <span text-left>
                     <p style="font-size: 3.7333vw">地表水达标率</p>
-                    <p style="font-size: 2.9333vw;">累计达标率：{{datas.dbs}}%</p>
+                    <p style="font-size: 2.9333vw;">累计达标率：{{datas.dbsRate}}%</p>
                 </span>
                 <span text-right>
-                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">{{datas.dbs}}%</span>
+                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">{{datas.dbsRate}}%</span>
                 </span>
             </div>
 
             <div class="item">
                 <span text-left>
                     <p style="font-size: 3.7333vw;">饮用水达标率</p>
-                    <p style="font-size: 2.9333vw;">累计达标率：{{datas.yys}}%</p>
+                    <p style="font-size: 2.9333vw;">累计达标率：{{datas.yysRate}}%</p>
                 </span>
                 <span text-right>
-                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">{{datas.yys}}%</span>
+                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">{{datas.yysRate}}%</span>
                 </span>
             </div>
             
@@ -105,7 +108,7 @@ export default {
         datas: {
             type: Object
         },
-        isAir: {
+        type: {
             type: Number,
             default: 0
         }

@@ -12,7 +12,10 @@
     </y-header>
 
     <swiper :options="swiperOption" class="y-swiper">
-        <swiper-slide v-for="(n, i) in 3" :key="i">Slide {{n}}</swiper-slide>
+        <swiper-slide v-for="(n, i) in detail.attachmentChild" :key="i">
+            <img :src="n.attachmentAddress" alt="">
+            <!-- {{n}} -->
+        </swiper-slide>
         <div class="swiper-pagination" slot="pagination"></div>
     </swiper>
 
@@ -64,31 +67,37 @@ export default {
             this.$router.back()
         },
         goDetail(cell) {
-            // console.log(this.detail)
+            
             this.detail.type = this.$route.params.type;
             this.detail.id = this.$route.params.detail_id;
+
+            // console.log(this.detail.type, '===============////////////////////')
             this.$router.push({
                 path: cell.url,
                 query: this.detail
+                
+                // query: {
+                //     id: this.$route.params.detail_id,
+                //     type: this.$route.params.type
+                // }
             });
         },
         // 获取企业详情信息
         getDetail() {
-            let params = this.$route.params;
-
+          let params = this.$route.params;
+          console.log(params)
           if(params.type == 3){
             let url = this.url
             this.$http.get(url+'/GIS/air/one/details',{ params:{
               id:params.detail_id
-            }})
+            }}).then(res => {
+                this.detail = res.data.data;
+            })
+          }else {
+            this.$http.get(`http://172.21.92.62:8080/enterpiseInfo/info/${params.type}/${params.detail_id}`)
               .then(res => {
                 this.detail = res.data.data;
-              })
-          }else {
-            this.$http.get(`http://172.21.92.215:8080/enterpiseInfo/info/${params.type}/${params.detail_id}`)
-              .then(res => {
-                // console.log(res.data)
-                this.detail = res.data;
+                console.log('水质站或者污染企业', this.detail)
               })
           }
 
@@ -101,6 +110,11 @@ export default {
 </script>
 
 <style scoped>
+    img {
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
     .y-swiper {
         overflow: hidden;
         width: 710px;

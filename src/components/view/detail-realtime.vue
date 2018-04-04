@@ -15,84 +15,44 @@
 
 
 
-
-    <template v-if=" $route.query.type !== '1' ">
+    <!-- 水质站 -->
+    <template v-if=" $route.query.type == '2' ">
       <div card>
-        <div cell>
-          <span>高锰酸钾指数</span>
-          <span>3.96 mg/L</span>
-        </div>
-        <div cell>
-          <span>总磷</span>
-          <span>3.96 mg/L</span>
-        </div>
-        <div cell>
-          <span>氨氮</span>
-          <span>3.96 mg/L</span>
-        </div>
-        <div cell>
-          <span>生物毒性</span>
-          <span>3.96 mg/L</span>
-        </div>
-        <div cell>
-          <span>温度</span>
-          <span>3.96 mg/L</span>
-        </div>
-        <div cell>
-          <span>PH(无量纲)</span>
-          <span>3.96 mg/L</span>
-        </div>
-        <div cell>
-          <span>浊度(FTU)</span>
-          <span>3.96 mg/L</span>
-        </div>
-        <div cell>
-          <span>导电率(us/cm)</span>
-          <span>3.96 mg/L</span>
+        <div class="waterList" v-for="(info, index) in listInfo">
+          <div class="hd">{{info.name}}</div>
+          <div cell v-for="yzs in info.yzs">
+            <span>{{yzs.yzname}}</span>
+            <span>{{yzs.value}}</span>
+          </div>
         </div>
       </div>
     </template>
-    <template v-if=" $route.query.type == '1' && theIndex == 1">
-      <div card v-for="li in listtitle.equipments">
-        <div cell v-for="item in li.yzs">
-          <span>{{item.yzname}}</span>
-          <span>{{item.value}}</span>
-        </div>
-       <!-- <div cell>
-          <span>A相电流</span>
-          <span>23.1m³/分</span>
-        </div>
+
+    <!-- 污染企业 -->
+    <template v-if=" $route.query.type == '1'">
+
+      <div card v-for="li in listInfo" v-if="theIndex == 0">
         <div cell>
-          <span>B相电流</span>
-          <span>&#45;&#45;</span>
+          {{li.name}}
         </div>
-        <div cell>
-          <span>C相电流</span>
-          <span>1</span>
+        <div cell v-for="yzs in li.yzs" style="margin-left: 2.6667vw; padding: 2.6667vw" >
+          <span>{{yzs.yzname}}</span>
+          <span>{{yzs.value}}</span>           
         </div>
-        <div cell>
-          <span>A相电压</span>
-          <span>1</span>
-        </div>
-        <div cell>
-          <span>B相电压</span>
-          <span>1</span>
-        </div>
-        <div cell>
-          <span>C相电压</span>
-          <span>1</span>
-        </div>
-        <div cell>
-          <span>能耗</span>
-          <span>1</span>
-        </div>
-        <div cell>
-          <span>总能耗</span>
-          <span>1</span>
-        </div>-->
       </div>
+      
+      <div card v-for="li in listInfo" v-if="theIndex == 1">
+        <div cell>
+          {{li.name}}
+        </div>
+        <div cell v-for="yzs in li.yzs" style="margin-left: 2.6667vw; padding: 2.6667vw" >
+          <span>{{yzs.yzname}}</span>
+          <span>{{yzs.value}}</span>           
+        </div>
+      </div>
+
     </template>
-    <!-- <template v-if=""></template> -->
+    
 
 
   </div>
@@ -115,18 +75,49 @@ export default {
       list:[],
       reals:[],
       time:[],
-      listTrue:true
+      listTrue:true,
+      // 下半部分的因子
+      listInfo: ''
     }
   },
   created() {
     this.$nextTick(() => {
-      this.getlistcon()
+
+    
+    if(this.$route.query.type == 2) {  // 水质站
+      let id =localStorage.getItem('id');
+      this.$http.post(`http://172.21.92.62:8080/enterpiseInfo/monitor/2/${id}`)
+          .then(res => {
+            
+            let data = res.data.data;
+
+            this.listtitle = data;
+
+            this.listInfo = data.equipments;
+
+            console.log(data.reals)
+            // 中间的图表
+            let avgs = [],
+                times = [];
+            data.reals.map(value => {
+              avgs.push(value.avg);
+              times.push(value.time);
+            });
+            this.list = avgs;
+            this.time = times;
+
+            this.listTrue = false;
+            setTimeout(()=>{
+              this.listTrue = true
+            },10);
+            
+
+
+          })
+    }
     })
-
-
   },
   mounted() {
-
   },
   methods: {
     handleback() {
@@ -134,37 +125,76 @@ export default {
     },
     changeTab(index) {
       this.theIndex = index;
-
-      console.log(this.tabs[index])
-    },
-    getlistcon(){
-      let self = this
-      let params = this.$route.params;
-      function sortNumber(a,b) {
-        return a - b
+      if(this.theIndex == 0) {  // 在线监测
+        this.getlistcon("1")
       }
-      let id =  localStorage.getItem('id')
-      this.$http.get(`http://172.21.92.215:8080/enterpiseInfo/monitor/1/${id}`)
-        .then(res => {
-          self.listtitle = res.data.data
-          let timeList = []
-          let avg = []
-          self.reals = res.data.data.reals.sort(function (s, t) {
-            var a = s.time;
-            var b = t.time;
-            return a - b
-          })
-          self.reals.forEach((val)=>{
-            timeList.push(Number(val.time))
-            avg.push(Number(val.avg))
-          })
-          self.time = timeList
-          self.list = avg
-          self.listTrue = false
-          setTimeout(()=>{
-            self.listTrue = true
-          },10)
+      if(this.theIndex == 1){ // 工况监测
+        this.getGC("0")
+      }
+    },
+    // 在线监测
+    getlistcon(type){
+      let self = this
+      let query = this.$route.query,
+          id =  localStorage.getItem('id')
+      
+      this.$http.get(`http://172.21.92.62:8080/enterpiseInfo/monitor/${type}/${id}`)
+      .then(res => {
+        
+        let data = res.data.data;
+        
+        // 顶部的标题
+        this.listtitle = data
+
+        // 下半部分列表
+        this.listInfo = data.equipments;
+
+
+        // 中间的图表
+        let avgs = [],
+            times = [];
+        data.reals.map(value => {
+          avgs.push(value.avg);
+          times.push(value.time);
         })
+        this.list = avgs;
+        this.time = times
+        this.listTrue = false;
+        setTimeout(()=>{
+          self.listTrue = true
+        },10)
+        
+
+      });
+
+    },
+    // 工程监控
+    getGC(type) {
+      let id = localStorage.getItem('id');
+      this.$http.get(`http://172.21.92.62:8080/enterpiseInfo/monitor/${type}/${id}`)
+          .then(res => {
+            let data = res.data.data;
+            // 顶部的标题
+            this.listtitle = data;
+
+
+            // 底部因子列表
+            this.listInfo = data.equipments;
+            
+            // 中间图表
+            let cums = []
+            data.reals.map(value => {
+               cums.push(value.cum)
+            })
+            this.list = cums;
+
+            this.listTrue = false
+
+            setTimeout(()=>{
+              this.listTrue = true
+            },10)
+
+          })
     }
   }
 }
@@ -174,5 +204,13 @@ export default {
   .menu {
     width: 400px;
     margin: 0 auto;
+  }
+
+  .waterList .hd{
+    font-size: 28px;
+    font-weight: bold;
+    padding: 10px 25px;
+    /* border-bottom: 1px solid #dcdcdc; */
+    color: #fff;
   }
 </style>

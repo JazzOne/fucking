@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <img class="bg" :src="require('@/assets/background.png')" alt="">
     <router-view/>
   </div>
 </template>
@@ -16,9 +17,10 @@ export default {
   padding: 0;
   margin: 0;
 }
+.bg{ position: absolute; width: 100%; height: 100%; left: 0; top: 0; bottom: 0; right: 0; z-index: -10; }
 html, body, #app{
   height: 100%;
-  background: url('./assets/background.png')center center no-repeat;
+  /* background: url('./assets/background.png')center center no-repeat; */
   /* background: linear-gradient(to bottom,#07456a,#44718b,#07456a); */
   font-family: "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
 }

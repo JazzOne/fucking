@@ -21,14 +21,21 @@ export default {
     methods: {
         initMap() {
             let map = new AMap.Map('map-container', {
+                // resizeEnable: true,
+                // zoom: 11,
+                // // center: [116.397428, 39.90923]
+                // center: [105.646647,29.489524]
                 resizeEnable: true,
-                zoom:11,
-                center: [116.397428, 39.90923]
+                zoom: 10,
+                center:  [105.646647, 29.489524]
             });
 
-            var lnglats=[//也可以使用LngLat对象
-                [116.368904,39.923423],[116.382122,39.921176],
-                [116.387271,39.922501],[116.398258,39.914600]
+            var lnglats=[ //也可以使用LngLat对象
+                [105.644116,29.481391],
+                
+                // [116.382122,39.921176],
+                // [116.387271,39.922501],
+                // [116.398258,39.914600]
             ];
 
             var infoWindow = new AMap.InfoWindow({

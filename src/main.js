@@ -16,11 +16,24 @@ Vue.prototype.$echarts = echarts
 
 
 // 引入ajax库
- import axios from 'axios'
- Vue.prototype.$http = axios
- Vue.prototype.url = 'http://172.21.92.248:8080'
+import axios from 'axios'
+Vue.prototype.$http = axios
+Vue.prototype.url = 'http://172.21.92.248:8080'
 import fetch from '@/axios/service'
 Vue.prototype.$service = fetch;
+
+
+// document.addEventListener('deviceready', () => {
+//   new Vue({
+//       el: '#app',
+//       router,
+//       store,
+//       template: '<App/>',
+//       components: { App }
+//   })
+//   window.navigator.splashscreen.hide()
+// }, false);
+
 
 
 /* eslint-disable no-new */

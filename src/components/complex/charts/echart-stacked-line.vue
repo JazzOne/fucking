@@ -2,19 +2,19 @@
   <div>
       <div class="chart-stacked-title">
         <div class="item">
-            <span class="badge"></span>
+            <span class="badge" style="background: #ff4799;"></span>
             <span class="text">荣昌</span>
         </div>
         <div class="item">
-            <span class="badge"></span>
+            <span class="badge" style="background: #6be9ee;"></span>
             <span class="text">渝西片区</span>
         </div>
         <div class="item">
-            <span class="badge"></span>
+            <span class="badge" style="background: #ffd216;"></span>
             <span class="text">考核标准</span>
         </div>
         <div class="item">
-            <span class="badge"></span>
+            <span class="badge" style="background: #26df68;"></span>
             <span class="text">国家标准</span>
         </div>
     </div>
@@ -26,7 +26,7 @@
 export default {
     name: 'echart-stacked-line',
     props: {
-
+        source: Array
     },
     data() {
         return {
@@ -35,6 +35,10 @@ export default {
     },
     methods: {
         createChart() {
+            
+            
+            
+            
             let myChart = this.$echarts.init(document.querySelector('.myChart'));
             let option = {
                 dataZoom: [
@@ -86,45 +90,45 @@ export default {
                     show: false,
                     },
                     axisTick: {
-                    show: false
+                        show: false
                     },
                     axisLabel:{
-                    interval: 0,
-                    padding: [6, 10, 5, 10]
+                        interval: 0,
+                        padding: [6, 10, 5, 10]
                     },
                     axisLine: {
-                    lineStyle: {
-                        color: '#fff',
-                        opacity: 0.3
-                    }
+                        lineStyle: {
+                            color: '#fff',
+                            opacity: 0.3
+                        }
                     },
-                    data: ['2015','2016','2017','2018','2019','2020','2021']
+                    data: ['2015','2016','2017','2018','2019']
                 },
                 yAxis: {
                     show: false,
                     type: 'value',
                     splitLine: {
-                    show: false
+                        show: false
                     }
                 },
                 series: [
-                    {   
+                    {
                         name:'荣昌',
                         type:'line',
                         stack: '总量',
                         smooth: true,
                         symbol: 'none',
                         itemStyle : {
-                        normal : {
-                            lineStyle:{
-                                color:'#ff4799'
+                            normal : {
+                                lineStyle:{
+                                    color:'#ff4799'
+                                }
                             }
-                        }
                         },
-                        data:[120, 132, 180, 134, 90, 230, 210],
+                        data: [120, 132, 180, 134, 90, 230, 210],
                     },
                     {
-                        name:'联盟广告',
+                        name:'渝西片区',
                         type:'line',
                         stack: '总量',
                         symbol: 'none',
@@ -139,7 +143,7 @@ export default {
                         data:[220, 50, 191, 234, 290, 330, 310]
                     },
                     {
-                        name:'视频广告',
+                        name:'考核标准',
                         type:'line',
                         smooth: true,
                         symbol: 'none',
@@ -154,7 +158,7 @@ export default {
                         data:[150, 232, 201, 154, 190, 330, 410]
                     },
                     {
-                        name:'直接访问',
+                        name:'国家标准',
                         type:'line',
                         smooth: true,
                         symbol: 'none',
@@ -166,7 +170,7 @@ export default {
                             }
                         }
                         },
-                        data:[320, 332, 301, 334, 390, 330, 320]
+                        data: [320, 332, 301, 334, 390, 330, 320]
                     }
                 ]
             };
@@ -175,6 +179,14 @@ export default {
     },
     mounted() {
         this.createChart()
+        
+        // console.log(this.source)
+        let xdata = [];
+        this.source.map(value => {
+            // console.log(value)
+            xdata.push(value.years)
+        })
+        console.log(xdata)
     }
 }
 </script>

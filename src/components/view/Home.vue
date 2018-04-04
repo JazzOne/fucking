@@ -8,8 +8,9 @@
 
     <y-tabs class="childSwitch" dark :tabs="childTabs" @change="changeChild"></y-tabs>
 
-    <y-chart :currentChart="childTabs[childIndex].type" card :data="dashboards"></y-chart>
-    
+    <y-chart :currentChart="childTabs[childIndex].type" card></y-chart>
+
+
     <dashboard :datas="dashboards" :isAir="headerIndex"></dashboard>
 
     <!-- 底部菜单 -->
@@ -48,10 +49,9 @@
 import yTabs from '@/components/global/y-tabs';
 import yChart from '@/components/complex/charts/y-chart-container';
 import dashboard from '@/components/simple/dashboard';
-
 import yPopup from '@/components/global/y-popup';
+import { getPmAvg } from '../../axios/service';
 
-import { getPmAvg } from '../../axios/service'
 
 export default {
   name: 'home',
@@ -63,10 +63,9 @@ export default {
   },
   data () {
     return {
-      // 空气检测 || 水质检测
+
       headerTabs: [{name: '空气监测'}, {name: '水质监测'}],
       headerIndex: 0,
-      // AQI || 空气质量 || 优良天数 || PM2.5  ...
       childIndex: 0,
 
       // 首页主面板数据
@@ -86,12 +85,13 @@ export default {
   },
   watch: {
     headerIndex(val, oldVal) {
+      
       if(val == 0) {
         this.$service.getDashBoard().then((res) => {
           let obj = {}
           obj = {
             rank: res.rank,
-            day: res.day,
+            // day: res.day,
             avg: res.avg[0]
           };
 
@@ -109,7 +109,7 @@ export default {
           
         
         // 排名
-        this.$http.post('http://172.21.92.62:8080/waterinfo/getcqwipm', {
+        this.$http.post('http://172.21.92.143:8080/waterinfo/getcqwipm', {
           "years":"2018",
           "month":"3",
           "areaId":"3"
@@ -118,7 +118,7 @@ export default {
         });
 
         // 超标指数
-        this.$http.post('http://172.21.92.62:8080/waterinfo/getchaobiaoyz', {
+        this.$http.post('http://172.21.92.143:8080/waterinfo/getchaobiaoyz', {
           "mn":"98333426611001"
         }).then(res => {
           this.dashboards.zhishu = res.data.data
@@ -126,7 +126,7 @@ export default {
         })
         
         // 
-        this.$http.post('http://172.21.92.62:8080/waterinfo/getwaterrate', [{
+        this.$http.post('http://172.21.92.143:8080/waterinfo/getwaterrate', [{
           years: "2018",
           month: "3",
           areaId: "1",
@@ -137,7 +137,7 @@ export default {
         })
 
         // 
-        this.$http.post('http://172.21.92.62:8080/waterinfo/getwaterrate', [{
+        this.$http.post('http://172.21.92.143:8080/waterinfo/getwaterrate', [{
           years: "2018",
           month: "3",
           areaId: "1",
@@ -152,6 +152,7 @@ export default {
     }
   },
   methods: {
+    // 切换空气检测/水质监测
     changeMain(index) {
       this.childIndex = 0;
       this.headerIndex = index;

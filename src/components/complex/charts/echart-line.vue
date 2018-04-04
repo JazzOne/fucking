@@ -28,7 +28,7 @@ export default {
     // },
     data() {
         return {
-
+            
         }
     },
     created() {
@@ -38,6 +38,7 @@ export default {
     },
     methods: {
         drawLine() {
+            
             let myChart = this.$echarts.init(document.querySelector('.myChart'))
             let option = {
                 dataZoom: [
@@ -47,7 +48,8 @@ export default {
                         orient: "horizontal",
                         filterMode: "none",
                         start: 0,
-                        end: 40,
+                        // end: this.datalist.length <= 2 ? 100 : 40,
+                        end: 80,
                         zoomLock: true,
                         borderColor: "#fff",
                         dataBackground: {
@@ -86,32 +88,28 @@ export default {
                         show: false,
                     },
                     axisTick: {
-                    show: false
+                        show: false
                     },
                     axisLabel:{
-                    interval: 0,
-                    padding: [6, 0, 5, 0]
+                        interval: 0,
+                        padding: [6, 0, 5, 0]
                     },
                     axisLine: {
-                    lineStyle: {
-                        color: '#fff',
-                        opacity: 0.3
-                    }
+                        lineStyle: {
+                            color: '#fff',
+                            opacity: 0.3
+                        }
                     },
                     data: this.time,
                 },
                 yAxis: {
                     show: false,
                     type: 'value',
-//                     min: 0,
-//                     max: 150,
-                    // interval: 50,
                     splitLine:{
                         show: false,
                     },
                 },
                 tooltip: {
-
                     formatter: 'AQI: {c} 重度',
                     backgroundColor: '#fff',
                     textStyle: {
@@ -129,6 +127,7 @@ export default {
                     type: 'line',
                     symbol: 'image://' + require('@/assets/icon/dot.png'),
                     symbolSize: 15,
+                    showAllSymbol: true,
                     smooth: true,
                     itemStyle : {
                         normal : {
@@ -140,7 +139,7 @@ export default {
                 }]
             };
             myChart.setOption(option);
-            console.log(this.time)
+            // console.log(this.time)
         },
     }
 }

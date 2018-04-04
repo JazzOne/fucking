@@ -12,16 +12,19 @@
         <img src="@/assets/logo.png" slot="right" width="25" height="25">
     </y-header>
 
-    <y-tabs dark :tabs="tableType" style="margin: 15px 0;"></y-tabs>
+    <y-tabs dark :tabs="tableType" style="margin: 2vw 0;" @change="changeTable"></y-tabs>
 
+    
 
     <div class="table" card>
         <div class="title" cell>
-            <span>152条日报</span>
-            <span>2018-01-03</span>
+            
+            <span>{{tableData.total}}条{{tableType[tableIndex].name}}</span>
+            <span>{{vtime}}</span>
         </div>
         <div class="table-body">
-            <table id="mytable">
+            <!-- 水质站 -->
+            <table id="mytable" v-if="$route.query.type == 2">
                 <thead>
                     <tr>
                         <td>时间</td>
@@ -38,18 +41,41 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="n in 100" :key="n">
-                        <td>01:00</td>
-                        <td>12</td>
-                        <td>3.96</td>
-                        <td>2323</td>
-                        <td>0.8</td>
-                        <td>8%</td>
-                        <td>12</td>
-                        <td>1.134</td>
-                        <td>12</td>
-                        <td>1.134</td>
-                        <td>23.3</td>
+                    <tr v-for="(cell, index) in tableData.list" :key="index">
+                        <td>{{cell.nodeTime}}</td>
+                        <td>{{cell.cod ? cell.cod : '--'}}</td>
+                        <td>{{cell.gms ? cell.gms : '--'}}</td>
+                        <td>{{cell.zl ? cell.zl : '--'}}</td>
+                        <td>{{cell.at ? cell.at : '--'}}</td>
+                        <td>{{cell.swdx ? cell.swdx : '--'}}</td>
+                        <td>{{cell.wd ? cell.wd : '--'}}</td>
+                        <td>{{cell.ph ? cell.ph : '--'}}</td>
+                        <td>{{cell.zd ? cell.zd : '--'}}</td>
+                        <td>{{cell.ddl ? cell.ddl : '--'}}</td>
+                        <td>{{cell.rjy ? cell.rjy : '--'}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- 污染企业 -->
+            <table id="mytable" v-if="$route.query.type == 1">
+                <thead>
+                    <tr>
+                        <td>时间</td>
+                        <td>在线率(%)</td>
+                        <td>废水排放量</td>
+                        <td>废气排放量</td>
+                        <!-- <td>关键设备运行时间</td> -->
+                        <!-- <td>关键设备能耗</td> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(cell, index) in tableData.list" :key="index">
+                        <td>{{cell.nodeTime}}</td>
+                        <td>{{cell.onlineRate}}</td>
+                        <td>{{cell.waterEmission}}</td>
+                        <td>{{cell.gasEmission ? cell.gasEmission : '--'}}</td>
+                        <!-- <td>{{cell.equipmentRunTime ? cell.equipmentRunTime : '--'}}</td> -->
+                        <!-- <td>8%</td> -->
                     </tr>
                 </tbody>
             </table>
@@ -70,12 +96,56 @@ export default {
     data() {
         return {
             tableType: [{ name: '日报' }, { name: '月报' }, { name: '年报'}],
+            tableIndex: 0,
+            tableData: []
+        }
+    },
+    computed: {
+        vtime() {
+            let date = new Date(),
+                year = date.getFullYear(),
+                month = (date.getMonth() + 1) < 10 ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1),
+                day = date.getDate() ? '0' + date.getDate() : date.getDate(),
+                result = '';
+            // return month
+            switch(this.tableIndex) {
+                case 0: //日报
+                    result = `${year}-${month}-${day}`
+                break;
+                case 1: // 月报
+                    result = `${year}-${month}`
+                break;
+                case 2: // 日报
+                    result = year
+                break;
+            }   
+            return result;
         }
     },
     methods: {
         routerBack() {
             this.$router.back();
+        },
+
+        // 切换报表 
+        changeTable(index) {
+            this.tableIndex = index;
+            console.log(index)
+            this.$service.getTable({
+                id: this.$route.query.id,
+                date: this.vtime,
+                pageNo: 1,
+                pageSize: 100  // 设置最大化，简化做分页的交互
+            }).then(res => {
+                console.log(res.data)
+                this.tableData = res.data;
+
+
+            })
         }
+    },
+    created() {
+        console.log(this.$route.query.type, '来源页面')
     }
 }
 </script>

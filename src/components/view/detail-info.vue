@@ -133,15 +133,15 @@
             </div>
             <div cell>
                 <span>站点类型</span>
-                <span>重庆XX水质站</span>
+                <span>国控</span>
             </div>
             <div cell v-if="$route.query.type != '3'">
                 <span>所属流域</span>
-                <span>{{infos.riverBasin}}</span>
+                <span>{{infos.riverBasin ? infos.riverBasin : '--'}}</span>
             </div>
             <div cell>
                 <span>安装位置</span>
-                <span>{{infos.address}}</span>
+                <span>{{infos.address ? infos.address : '--'}}</span>
             </div>
             <div cell>
                 <span>经度</span>
@@ -157,11 +157,11 @@
             </div>
             <div cell>
                 <span>运维负责人</span>
-                <span>{{infos.envHead}}</span>
+                <span>{{infos.envHead ? infos.envHead : '--'}}</span>
             </div>
             <div cell>
                 <span>运维负责人联系电话</span>
-                <span>{{infos.envHeadPhone}}</span>
+                <span>{{infos.envHeadPhone ? infos.envHeadPhone : '--'}}</span>
             </div>
         </div>
     </template>
@@ -199,7 +199,10 @@ export default {
             // 企业排污许可证
             book: {},
             // 工艺流程图
-            step: {}
+            step: {},
+
+            // 基本信息
+            infomation: {}
         }
     },
     computed: {
@@ -212,11 +215,16 @@ export default {
             this.$router.back()
         },
         changeTab(index) {
+            
             this.index = index;
             let id = this.infos.id;
+            
             switch(this.index) {
+                // case 0:
+                                
+                // break;
                 case 1:
-                    this.$http.get(`http://172.21.92.215:8080/enterpiseInfo/swage/${id}`)
+                    this.$http.get(`http://172.21.92.62:8080/enterpiseInfo/swage/${id}`)
                         .then(res => {
                             if(Object.prototype.toString.call(res.data) == '[object Null]') {
                                 console.log('暂无排污许可证')
@@ -226,8 +234,8 @@ export default {
                         })
                 break;
                 case 2:
-                    console.log('工艺流程图')
-                    this.$http.get(`http://172.21.92.215:8080/enterpiseInfo/drawing/${id}`)
+                    // console.log('工艺流程图')
+                    this.$http.get(`http://172.21.92.62:8080/enterpiseInfo/drawing/${id}`)
                         .then(res => {
                             if(Object.prototype.toString.call(res.data) == '[object Null]') {
                                 console.log('无工艺流程图')
@@ -240,7 +248,7 @@ export default {
         }
     },
     created() {
-        console.log(this.infos)
+        
     }
 }
 </script>

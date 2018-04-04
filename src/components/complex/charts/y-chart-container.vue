@@ -3,8 +3,11 @@
       <!-- 未交互 -->
       <!-- datalist -->
       <!-- <keep-alive>   -->
-        <component :is="currentChart" :datalist="data"></component>
+        <!-- <component :is="currentChart" :datalist="data"></component> -->
       <!-- </keep-alive> -->
+
+      <!-- {{currentChart}} -->
+      <echart-line v-if="currentChart == 'aqi'"></echart-line>
     
   </div>
 </template>
@@ -22,17 +25,22 @@ import cqwi from '@/components/complex/charts/chart-dot';
 export default {
     name: 'y-chart-content',
     components: {
-        // 空气质量 
-        aqi   : echartLine,    // AQI指数
-        air   : echartBar,     // 空气质量
-        day   : chartCircle,   // 优良天数
-        pm    : echartStacted, // PM2.5
-        // 水质监测
-        dm    : amap,          // 超标断面
-        cqwi  : cqwi,          // CQWI排名 
+        // // 空气质量 
+        // aqi   : echartLine,    // AQI指数
+        // air   : echartBar,     // 空气质量
+        // day   : chartCircle,   // 优良天数
+        // pm    : echartStacted, // PM2.5
+        // // 水质监测
+        // dm    : amap,          // 超标断面
+        // cqwi  : cqwi,          // CQWI排名 
         
-        // driver: echartLine,
-        // drink : echartLine
+        // // driver: echartLine,
+        // // drink : echartLine
+
+        echartLine,
+        echartBar,
+        chartCircle
+        
     },
     props: {
         // 根据传入的字符串动态渲染图表
@@ -48,22 +56,19 @@ export default {
     computed: {
         
     },
+    watch: {
+    },
     data() {
         return {
             
         }
     },
-    computed: {
-        demoData() {
-            if(this.currentChart == 'aqi') {
-                return '我是api组件的数据'
-            }else if(this.currentChart == 'drink') {
-                return '我是drink组件的数据'                
-            }else if(this.currentChart == 'driver') {
-                return 'driver'
-            }
-        }
+    methods: {
+        
     },
+    created() {
+        
+    }
 }
 </script>
 

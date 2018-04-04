@@ -1,5 +1,6 @@
 <template>
   <div class="chart-container">
+      
     <div class="title">
         <div class="left">
             <img src="@/assets/icon/time-icon.png" alt="">
@@ -17,17 +18,20 @@
 export default {
     name: 'echart-bar',
     props: {
-        data: String
+        data: {
+            type: Object
+        },
+        xData: {
+            type: Array
+        }
     },
     methods: {
         createCharts() {
             let myChart = this.$echarts.init(document.querySelector('.myChart'))
             let option = {
                 trigger: "axis", 
-                tooltip: {
-
-                },
-                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                tooltip: { },
+                axisPointer : {  // 坐标轴指示器，坐标轴触发有效
                     type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
                 },
                 dataZoom: [
@@ -70,7 +74,7 @@ export default {
                     containLabel: true
                 },
                 xAxis: {
-                    data: ["南川","长寿","涪陵","大足","南岸","潼南"],
+                    data: this.xData,
                     splitLine:{
                         show: false,
                     },
@@ -98,32 +102,36 @@ export default {
                         show: false,
                     },
                 },
-                series: [{
-                    name: '可用',
-                    barWidth: 25, //柱图宽度
-                    type: 'bar',
-                    stack:'使用情况',
-                    data: [50, 120, 136, 110, 100, 60],
-                    itemStyle:{
-                        normal: {color:"#d4f1fa"},
+                series: [
+                    {
+                        name: '',
+                        barWidth: 25, //柱图宽度
+                        type: 'bar',
+                        stack:'使用情况',
+                        data: this.data.bads,
+                        itemStyle:{
+                            normal: {color:"#d4f1fa"},
+                        }
+                    },
+                    {
+                        name: '',
+                        type: 'bar',
+                        stack:'使用情况',
+                        data: this.data.mids,
+                        itemStyle:{
+                            normal:{color:"#99d3eb"},
+                        }
+                    },
+                    {
+                        name: '',
+                        type: 'bar',
+                        stack:'使用情况',
+                        data: this.data.goods,
+                        itemStyle:{
+                            normal:{color:"#387ea6"},
+                        }
                     }
-                },{
-                    name: '不可用',
-                    type: 'bar',
-                    stack:'使用情况',
-                    data: [40, 122, 18, 35, 42, 40],
-                    itemStyle:{
-                        normal:{color:"#99d3eb"},
-                    }
-                },{
-                    name: '不可用',
-                    type: 'bar',
-                    stack:'使用情况',
-                    data: [140, 130, 102, 50, 40, 80],
-                    itemStyle:{
-                        normal:{color:"#387ea6"},
-                    }
-                }]
+                ]
             };
 
             myChart.setOption(option);
@@ -132,7 +140,16 @@ export default {
     created() {
     },
     mounted() {
-        this.createCharts()
+        this.$nextTick(() => {
+            setTimeout(() => {
+                // console.log(this.data.bads)
+                // console.log(this.xData, '=============') 
+                this.createCharts()  
+            }, 100);
+            
+        })
+        
+        // this.createCharts()
     }
 }
 </script>

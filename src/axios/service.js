@@ -2,13 +2,13 @@ import api from './api'
 import axios from 'axios';
 
 // 首页ajax基础参数
-let indexUrl = 'http://172.21.92.62:8080';
+// 172.21.92.62
+let indexUrl = 'http://172.21.92.62:8080',
+    otherUrl = 'http://172.21.92.62:8080/enterpiseInfo';
 let datetime = new Date(),
     year = datetime.getFullYear(),
     month = datetime.getMonth() + 1,
     day = datetime.getDate();
-
-
 
 
 
@@ -20,7 +20,7 @@ const fetch = {
     // 
     getEnterpiseList(type, pageNo = 1, pageSize = 5) {
         return new Promise((resolve, reject) => {
-            api.get('http://172.21.92.215:8080/enterpiseInfo/list', {
+            api.get(`${otherUrl}/list`, {
                 type: type,
                 pageNo: pageNo,
                 pageSize: pageSize
@@ -34,7 +34,6 @@ const fetch = {
     // 获取空气质量AQI
     getAQI(size = 1) {
         return new Promise((resolve, reject) => {
- 
             api.post(`${indexUrl}/airinfo/getaqi`,{
                 years: String(year),
                 month: "3",
@@ -48,25 +47,49 @@ const fetch = {
         })
     },
 
-    // 获取主页面板
-    getDashBoard() {
-        return new Promise((resolve, reject) => {
+    getAreaId() {
+        return api.get(`${indexUrl}/airinfo/getAllAreaId`);
+    },
 
-        
-            axios.all([getAQIRank(), getGoodDay(), getPmAvg()])
-            .then(axios.spread(function (rank, day, avg) {
-                let results = { 
-                    rank: rank.data, 
-                    day: day.data, 
-                    avg: avg.data 
-                };
-                resolve(results)
-            }));
+    getTable(params) {
+        return api.get(`${otherUrl}/req/find`, params);
+    },
 
+    getCWQI() {
+        // api.get(`${indexUrl}/airinfo/getallavgpmofyears`).then(res => {
+        //     console.log(res) 
+        // })
+
+        this.getAreaId().then(res => {
+            
+
+            
+            let obj = {
+                "years": String(year),
+                "month": "3",
+                "areaId": ""
+            }
+            let arr = [];
+            res.data.forEach(value => {
+                obj.areaId = value.areaId;
+                arr.push(obj)
+            });
+            
+            console.log(arr)
+
+            // api.post('http://172.21.92.143:8080/waterinfo/getcqwiInfolist', arr)
+            //     .then(res => {
+            //         console.log(res, '///////////////')
+            //     })
         })
+
+
+        // this.$http.post('http://172.21.92.143:8080/waterinfo/getcqwiInfolist', {
+            
+        // }).then(res => {
+        //     console.log(res)
+        // })
     }
-
-
 }
 
 // 主页请求
@@ -90,9 +113,9 @@ export function getGoodDay() {
 }
 
 // 获取平均浓度
-export function getPmAvg() {
+export function getPmAvg(params) {
     // 先获取所有地区的areaid
-    // fetch.getAQI().then(res => {
+    // return fetch.getAQI().then(res => {
     //     let areaIds = [],
     //         obj = {};
     //     res.forEach(element => {
@@ -104,19 +127,45 @@ export function getPmAvg() {
     //             areaIds.push(obj)
     //         }
     //     });
-
-    //     // console.log(areaIds)
-
         
-        return api.post(`${indexUrl}/airinfo/getavgpmofyears`, [{
-            "years": String(year),
-            "areaId": "2" // 默认返回荣昌的pm2.5浓度
-        }]);
-
+    //     // return api.post(`${indexUrl}/airinfo/getavgpmofyears`, areaIds);
 
     // })
+
+    return api.post(`${indexUrl}/airinfo/getavgpmofyears`, [{
+        years: '2018',
+        areaId: '2'
+    }]);
     
 }
+
+// 获取cqwi排名
+export function getCqwiRank() {
+    return api.post(`${indexUrl}/waterinfo/getcqwipm`, {
+        "years": String(year),
+        "month": "3",
+        "areaId": "3"
+    })
+}
+
+// 获取超标指数
+// 默认获取地表
+export function getPoint() {
+    return axios.post('http://172.21.92.143:8080/waterinfo/getchaobiaoyz', {
+        "mn":"98333426611001"
+    })
+}
+// 获取水质达标率
+// 默认获取地表水达标率
+export function getRate(type = 1) {
+    return axios.post('http://172.21.92.143:8080/waterinfo/getwaterrate', [{
+        years: String(year),
+        month: "3",
+        areaId: "1",
+        type: type  // 地表水（1） 饮用水（2）
+    }])
+}
+
 
 
 export default fetch

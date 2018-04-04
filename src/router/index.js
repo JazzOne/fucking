@@ -14,6 +14,10 @@ import SearchPage from '@/components/global/search-page'
 
 import map from '@/components/view/map'
 
+
+
+import Index from '@/components/view/Index'
+
 Vue.use(Router)
 
 export default new Router({
@@ -21,7 +25,8 @@ export default new Router({
     {
       path: '/',
       name: 'Home',
-      component: Home
+      component: Index
+      // component: Home   
     },
     {
       path: '/gis',
