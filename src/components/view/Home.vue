@@ -79,7 +79,7 @@ export default {
       if(this.headerIndex == 0) {
         return [{name: 'AQI', type: 'aqi'}, {name: '空气质量', type: 'air'}, {name: '优良天数', type: 'day'}, {name: 'PM2.5', type: 'pm'}]
       }else if (this.headerIndex == 1) {
-        return [{name: '超标断面', type: 'dm'}, {name: 'CQWI排名', type: 'cqwi'}, {name: '地表水达标率', type: 'driver'}, {name: '饮用水达标率', type:'drink'}]
+        return [{name: '超标断面', type: 'dm'}, {name: 'CWQI排名', type: 'cqwi'}, {name: '地表水达标率', type: 'driver'}, {name: '饮用水达标率', type:'drink'}]
       }
     }
   },

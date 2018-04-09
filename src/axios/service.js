@@ -7,10 +7,11 @@ let indexUrl = 'http://172.21.92.62:8080',
     otherUrl = 'http://172.21.92.62:8080/enterpiseInfo';
 let datetime = new Date(),
     year = datetime.getFullYear(),
-    month = datetime.getMonth() + 1,
+    // month = datetime.getMonth() + 1,
+    month = (datetime.getMonth() + 1) < 10 ? '0' + (datetime.getMonth() + 1) : (datetime.getMonth() + 1),
     day = datetime.getDate();
 
-
+    
 
 const fetch = {
     //
@@ -36,9 +37,9 @@ const fetch = {
         return new Promise((resolve, reject) => {
             api.post(`${indexUrl}/airinfo/getaqi`,{
                 years: String(year),
-                month: "3",
-                day: "21",
-                areaCode: "2",
+                month: String(month),
+                day: String(day),
+                areaCode: "500153",
                 length: String(size)
             }).then(res => {
                 resolve(res.data)
@@ -56,39 +57,30 @@ const fetch = {
     },
 
     getCWQI() {
-        // api.get(`${indexUrl}/airinfo/getallavgpmofyears`).then(res => {
-        //     console.log(res) 
-        // })
-
-        this.getAreaId().then(res => {
-            
-
+        // console.log(month)
+        return this.getAreaId().then(res => {
             
             let obj = {
                 "years": String(year),
-                "month": "3",
+                "month": "03",
                 "areaId": ""
-            }
+            };
             let arr = [];
             res.data.forEach(value => {
                 obj.areaId = value.areaId;
                 arr.push(obj)
             });
             
-            console.log(arr)
+            // console.log(arr, 'cwqi请求参数')
 
-            // api.post('http://172.21.92.143:8080/waterinfo/getcqwiInfolist', arr)
-            //     .then(res => {
-            //         console.log(res, '///////////////')
-            //     })
+            return api.post('http://172.21.92.62:8080/waterinfo/getcqwiInfolist', arr)
+            //    .then(res => {
+            //      console.log(res, 'cwqi排名')
+            //    });
+
+
         })
 
-
-        // this.$http.post('http://172.21.92.143:8080/waterinfo/getcqwiInfolist', {
-            
-        // }).then(res => {
-        //     console.log(res)
-        // })
     }
 }
 
@@ -98,8 +90,8 @@ const fetch = {
 // 默认获取今年本月的AQI排名
 export function getAQIRank() {
     return api.post(`${indexUrl}/airinfo/getaqipm`,{
-        "month": "3",
-        "areaId":"2",
+        "month": String(month),
+        "areaId":"500153",
         "years": String(year)
     })
 };
@@ -107,7 +99,7 @@ export function getAQIRank() {
 // 获取优良天数
 export function getGoodDay() {
     return api.post(`${indexUrl}/airinfo/getgooddays`,{
-        "areaId":"2",
+        "areaId":"500153",
         "years": String(year)
     })
 }
@@ -127,14 +119,12 @@ export function getPmAvg(params) {
     //             areaIds.push(obj)
     //         }
     //     });
-        
     //     // return api.post(`${indexUrl}/airinfo/getavgpmofyears`, areaIds);
-
     // })
 
     return api.post(`${indexUrl}/airinfo/getavgpmofyears`, [{
-        years: '2018',
-        areaId: '2'
+        years: String(year),
+        areaId: '500153'
     }]);
     
 }
@@ -143,27 +133,26 @@ export function getPmAvg(params) {
 export function getCqwiRank() {
     return api.post(`${indexUrl}/waterinfo/getcqwipm`, {
         "years": String(year),
-        "month": "3",
-        "areaId": "3"
+        "month": "03",
+        "areaId": "500153"
     })
 }
 
 // 获取超标指数
 // 默认获取地表
 export function getPoint() {
-    return axios.post('http://172.21.92.143:8080/waterinfo/getchaobiaoyz', {
+    return axios.post('http://172.21.92.62:8080/waterinfo/getchaobiaoyz', {
         "mn":"98333426611001"
     })
 }
 // 获取水质达标率
 // 默认获取地表水达标率
-export function getRate(type = 1) {
-    return axios.post('http://172.21.92.143:8080/waterinfo/getwaterrate', [{
+export function getRate() {
+    return axios.post('http://172.21.92.62:8080/waterinfo/getwaterrate', {
         years: String(year),
-        month: "3",
-        areaId: "1",
-        type: type  // 地表水（1） 饮用水（2）
-    }])
+        areaId: "500153",
+        // type: type  // 地表水（1） 饮用水（2）
+    })
 }
 
 

@@ -18,10 +18,10 @@
             <div class="item">
                 <span text-left>
                     <p style="font-size: 3.7333vw">渝西13区县排名</p>
-                    <p style="font-size: 2.9333vw">上月排名：{{datas.rank}}</p>
+                    <p style="font-size: 2.9333vw">上月排名：{{datas.rank.nowpm}}</p>
                 </span>
                 <span text-right>
-                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">{{datas.rank}}</span> / 13
+                    <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">{{datas.rank.nowpm}}</span> / {{datas.rank.count}} 
                 </span>
             </div>
             
@@ -66,8 +66,8 @@
         <div class="list">
             <div class="item">
                 <span text-left>
-                    <p style="font-size: 3.7333vw">水质CQWI排名</p>
-                    <p style="font-size: 2.9333vw">上月排名：{{datas.rank}}</p>
+                    <p style="font-size: 3.7333vw">水质CWQI排名</p>
+                    <p style="font-size: 2.9333vw">上月排名：{{datas.rank.nowpm}}</p>
                 </span>
                 <span text-right>
                     <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">{{datas.rank}}</span> / 13

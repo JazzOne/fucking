@@ -9,7 +9,7 @@
              slot="left" 
              @click="routerBack">
         <span>统计报表</span>
-        <img src="@/assets/logo.png" slot="right" width="25" height="25">
+        <img src="@/assets/logo.png" slot="right" style="width: 10.6667vw">
     </y-header>
 
     <y-tabs dark :tabs="tableType" style="margin: 2vw 0;" @change="changeTable"></y-tabs>

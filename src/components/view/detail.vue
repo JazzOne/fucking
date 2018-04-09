@@ -8,7 +8,7 @@
              slot="left"
              @click="routerBack">
         <span>{{detail.name}}</span>
-        <img src="@/assets/logo.png" slot="right" width="25" height="25">
+        <img src="@/assets/logo.png" slot="right"  style="width: 10.6667vw">
     </y-header>
 
     <swiper :options="swiperOption" class="y-swiper">

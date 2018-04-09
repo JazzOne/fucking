@@ -9,21 +9,113 @@
             <span href="javascript: void(0)" class="calendarBtn">3月</span>
         </div>
     </div>
-    <div class="myChart">
-        <!-- <ul>
-            <li>1</li>
-            <li>2</li>
-            <li>3</li>
-            <li>4</li>
-        </ul> -->
-    </div>
+    <div class="myChart"></div>
+
   </div>
 </template>
 
 <script>
+
 export default {
     name: 'chart-dot',
-    
+    data() {
+        return {
+            cwqi: [],   
+        }
+    },
+    computed: {
+        xAxis() {
+            let result = [];
+            this.cwqi.forEach(value => {
+                result.push(value.areaName)
+            })
+            return result
+        },
+        series() {
+            let result = [];
+            this.cwqi.forEach(value => {
+                result.push(value.cqwi)
+            })
+            return result
+        }
+    },
+    methods: {
+        getData() {
+            this.$service.getCWQI().then(res => {
+                this.cwqi = res.data;
+                // console.log(this.cwqi)
+                this.initChart()
+            })
+        },
+        initChart(){
+            console.log(this.cwqi)
+            let myChart = this.$echarts.init(document.querySelector('.myChart'))
+            let option = {
+                color: ['#3398DB'],
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                grid: {
+                    left: '-9%',
+                    right: '1%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis : [
+                    {
+                        type : 'category',
+                        data : this.xAxis,
+                        axisTick: {
+                            alignWithLabel: true
+                        },
+                        splitLine:{
+                            show: false,
+                        },
+                        axisTick: {
+                            show: false
+                        },
+                        axisLabel:{
+                            interval: 0,
+                            padding: [6, 0, 5, 0]
+                        },
+                        axisLine: {
+                            lineStyle: {
+                                color: '#fff',
+                                opacity: 0.3
+                            }
+                        },
+                    }
+                ],
+                yAxis : [
+                    {
+                        type : 'value',
+                        show: false,
+                        splitLine:{
+                            show: false,
+                        },
+                    }
+                ],
+                series : [
+                    {
+                        name:'CWQI排名',
+                        type:'bar',
+                        barWidth: '60%',
+                        data: this.series
+                    }
+                ]
+            };
+            myChart.setOption(option);
+        }
+    },
+    created() {
+        this.getData()
+    },
+    mounted() {
+        // this.initChart()
+    }
 }
 </script>
 
@@ -56,6 +148,22 @@ export default {
         text-align: center;
         background: rgba(255, 255, 255, .3);
         color: #fff;
+    }
+
+
+    /*  */
+    .myChart {
+        width: 100%;
+        height: 400px;
+    }
+    .chart-dot {
+        overflow: scroll;
+        white-space:nowrap;
+    }
+    .chart-dot li {
+        display: inline-block;
+        width: 100px;
+        text-align: center;
     }
     
 

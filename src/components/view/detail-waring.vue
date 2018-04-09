@@ -3,7 +3,7 @@
       <y-header>
         <img src="@/assets/icon/back-icon.png" class="backbtn" slot="left" width="25" height="25" @click="handleback">
         <span>报警信息</span>
-        <img src="@/assets/logo.png" slot="right" width="25" height="25">
+        <img src="@/assets/logo.png" slot="right" style="width: 10.6667vw">
       </y-header>  
 
       <div class="title" cell style="padding-left: 0; padding-right: 0;">

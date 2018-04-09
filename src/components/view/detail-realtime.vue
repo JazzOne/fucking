@@ -3,7 +3,7 @@
     <y-header>
       <img src="@/assets/icon/back-icon.png" class="backbtn" slot="left" width="25" height="25" @click="handleback">
       <span>实时数据</span>
-      <img src="@/assets/logo.png" slot="right" width="25" height="25">
+      <img src="@/assets/logo.png" slot="right"  style="width: 10.6667vw">
     </y-header>
 
     <y-tabs :tabs="tabs" class="menu" @change="changeTab" v-if=" $route.query.type == '1' "></y-tabs>
@@ -69,7 +69,7 @@ export default {
   },
   data(){
     return {
-      tabs: [{name: '在线监测'}, {name: '工程监控'}],
+      tabs: [{name: '在线监测'}, {name: '工况监控'}],
       theIndex: 0,
       listtitle:'',
       list:[],
@@ -88,7 +88,7 @@ export default {
       let id =localStorage.getItem('id');
       this.$http.post(`http://172.21.92.62:8080/enterpiseInfo/monitor/2/${id}`)
           .then(res => {
-            
+            console.log(res)
             let data = res.data.data;
 
             this.listtitle = data;

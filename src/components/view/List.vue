@@ -2,8 +2,8 @@
   <div class="list" padding>
       <y-header>
         <img src="@/assets/icon/back-icon.png" class="backbtn" slot="left" width="25" height="25" @click="handleback">
-        <span>{{title}}<span style="font-size: 3.4667vw;">(52在线)</span></span>
-        <img src="@/assets/logo.png" slot="right" width="25" height="25">
+        <span>{{title}}<span style="font-size: 3.4667vw;">({{lists.length}}在线)</span></span>
+        <img src="@/assets/logo.png" slot="right"  style="width: 10.6667vw">
       </y-header>
 
       <y-search @filter="filterShow = true"></y-search>

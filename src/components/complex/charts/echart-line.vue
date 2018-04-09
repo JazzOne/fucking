@@ -32,12 +32,19 @@ export default {
         }
     },
     created() {
+        
     },
     mounted() {
-        this.drawLine()
+        this.$nextTick(() => {
+            setTimeout(() => {
+                this.drawLine()  
+            }, 100);            
+        })
+        
     },
     methods: {
         drawLine() {
+            
             
             let myChart = this.$echarts.init(document.querySelector('.myChart'))
             let option = {
@@ -110,7 +117,7 @@ export default {
                     },
                 },
                 tooltip: {
-                    formatter: 'AQI: {c} 重度',
+                    formatter: '{c}',
                     backgroundColor: '#fff',
                     textStyle: {
                         color: '#000',

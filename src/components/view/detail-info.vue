@@ -9,7 +9,7 @@
              slot="left"
              @click="routerBack">
         <span>基本信息</span>
-        <img src="@/assets/logo.png" slot="right" width="25" height="25">
+        <img src="@/assets/logo.png" slot="right" style="width: 10.6667vw">
     </y-header>
 
     <swiper :options="swiperOption" class="y-swiper" >
@@ -104,10 +104,11 @@
                     <span v-if="book.maxiMum">{{book.maxiMum}}吨</span>
                     <span v-else>----</span>
                 </div>
-                <div style="font-size: 3.467vw;padding: 4vw; color: #fff;" v-if="book.attachmentAddress">
+                <div style="font-size: 3.467vw;padding: 4vw; color: #fff;">
                     <span>排污许可证附页</span>
-                    <div class="pictures">
-                        <img :src="img"
+                    <span class="arrow " :class="book.attachmentAddress ? 'down' : 'up' "></span>
+                    <div class="pictures" v-if="book.attachmentAddress">
+                        <img :src="img" 
                              v-for="(img, idx) in book.attachmentAddress"
                              :key="idx">
 
@@ -115,12 +116,14 @@
                 </div>
             </div>
             <div card v-else>
-                <div cell>
-                    <span>工艺名称</span>
-                    <span>湿法粗粉脱硫工艺</span>
-                </div>
-                <div class="pictures">
-                    <img :src="require('@/assets/screenShot.png')" alt="">
+                <div v-if="step">
+                    <!-- <div cell>
+                        <span>工艺名称</span>
+                        <span>湿法粗粉脱硫工艺</span>
+                    </div> -->
+                    <div class="pictures">
+                        <img :src="step.attachmentAddress" alt="">
+                    </div>
                 </div>
             </div>
         </div>
@@ -151,9 +154,10 @@
                 <span>纬度</span>
                 <span>{{infos.lat}}</span>
             </div>
+            <!-- 运维单位字段 -->
             <div cell>
                 <span>运维单位</span>
-                <span>重庆XX水质站</span>
+                <span>--</span>
             </div>
             <div cell>
                 <span>运维负责人</span>
@@ -229,7 +233,8 @@ export default {
                             if(Object.prototype.toString.call(res.data) == '[object Null]') {
                                 console.log('暂无排污许可证')
                             }else {
-                                this.book = res.data;
+                                this.book = res.data.data;
+                                console.log(this.book)
                             }
                         })
                 break;
@@ -240,7 +245,9 @@ export default {
                             if(Object.prototype.toString.call(res.data) == '[object Null]') {
                                 console.log('无工艺流程图')
                             }else {
-                                this.step = res.data;
+                                this.step = res.data.data;
+                                console.log(this.step, '工艺流程图')
+                                
                             }
                         })
                 break;
@@ -254,11 +261,11 @@ export default {
 </script>
 
 <style scoped>
-img {
-    width: 100%;
-    height: 100%;
-    border: 0;
-}
+    img {
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
     .y-swiper {
         overflow: hidden;
         width: 710px;
@@ -278,6 +285,24 @@ img {
         width: 100%;
         height: 100%;
 
+    }
+
+    .arrow {
+        display: inline-block;
+        vertical-align: middle;
+        float: right;
+        width: 20px;
+        height: 20px;
+        border-right: 2px solid #fff;
+        border-bottom: 2px solid #fff;
+        
+    }
+    .arrow.down {
+        transform: rotate(45deg)
+    }
+    .arrow.up {
+        transform: rotate(-135deg);
+        margin-top: 20px;
     }
 
 </style>

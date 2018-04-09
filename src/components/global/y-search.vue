@@ -4,7 +4,7 @@
           <span class="search-icon">
               <img :src="require('@/assets/icon/search-icon.png')" alt="">
           </span>
-          <input type="text" class="search-input" disabled placeholder="输入空气站名称" :value="value" @input="upDateVal($event.target.value)" >
+          <input type="text" class="search-input" disabled placeholder="输入搜索内容" :value="value" @input="upDateVal($event.target.value)" >
       </div>
       <div class="filter-btn" @click="clickFilter">
           筛选

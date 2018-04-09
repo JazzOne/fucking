@@ -4,7 +4,7 @@
     <y-header>
         <img src="@/assets/icon/user.png" slot="left" width="25" height="25">
         <y-tabs class="menus" :tabs="menus" slot="area" @change="changeMenu"></y-tabs>
-        <img src="@/assets/logo.png" slot="right" width="25" height="25">
+        <img src="@/assets/logo.png" slot="right" style="width: 10.6667vw">
     </y-header>
 
     <y-tabs class="navMenus" dark :tabs="navMenus" @change="changeNavMenu"></y-tabs>
@@ -29,7 +29,26 @@
         <!-- <amap></amap> -->
         <cqwi></cqwi>
     </div>
+    <div v-else-if="navMenus[navMenuIndex].type == 'driver'">
+        
+        <echart-line 
+            :time="dbstime" 
+            :datalist="dbsData"
+            v-if="dbs">
+            <div slot="right">年度：2018</div>
+        </echart-line>
+    </div>
 
+    <div v-else-if="navMenus[navMenuIndex].type == 'drink'">
+        
+        <echart-line 
+            
+            :time="yystime" 
+            :datalist="yysData"
+            v-if="yys">
+            <div slot="right">年度：2018</div>
+        </echart-line>
+    </div>
     <!-- /waterinfo/getcqwiInfolist -->
 
     <dashboard :datas="dash" :type="menuIndex"></dashboard>
@@ -110,7 +129,16 @@ export default {
             // PM2.5
             pmChartData: [],
             // 主页面板
-            dash: {}
+            dash: {},
+
+            // 地表水
+            dbsData: null,
+            dbstime: [],
+            dbs: false,
+            // 饮用水
+            yystime: null,
+            yysData: [],
+            yys: false
         }
     },
     computed: {
@@ -168,6 +196,7 @@ export default {
                             return value.areaPm;
                         })
                         this.lineData = arr
+                        // console.log(this.lineData)
                     });
                 break;
                 case 'air':
@@ -182,24 +211,51 @@ export default {
                     // console.log('断面 ')
                 break;
                 case 'cqwi':
-                    this.getCwqi()
+                    // this.getCwqi()
                 break;
                 case 'driver':
+                    getRate().then(res => {
+                        let time = [], datas = [];
+                        let data = res.data.data;
+                        
+                        data.forEach(element => {
+                            time.push(element.month)
+                            datas.push(element.dbsRate)
+                        });
+                        this.dbstime = time;
+                        this.dbsData = datas;
+                        this.dbs = true;
+                        this.yys = false;
+                        
+                    })
                 break;
                 case 'drink':
+                    getRate().then(res => {
+                        let time = [], datas = [];
+                        let data = res.data.data;
+                        
+                        data.forEach(element => {
+                            time.push(element.month)
+                            datas.push(element.yysRate)
+                        });
+                        this.yystime = time;
+                        this.yysData = datas;
+                        this.yys = true;
+                        this.dbs = false;
+                        
+                    })
                 break;
             }
 
         },
-        
 
         // 空气监测
         getAirMain() {
-            let ajaxs = [this.$service.getAQI("1"), getAQIRank(), getGoodDay(), getPmAvg() ];
+            let ajaxs = [this.$service.getAQI(), getAQIRank(), getGoodDay(), getPmAvg() ];
             this.$http.all(ajaxs)
                 .then(this.$http.spread( (pm, rank, days, avg) => {
                     // console.log(pm[0].areaPm, rank.data, days.data, avg.data[0])
-                    
+                    console.log(rank.data)
                     this.dash = {
                         rank: rank.data,
                         pm: pm[0].areaPm,
@@ -208,16 +264,16 @@ export default {
                         targetdays: days.data.targetdays,
                         areaPm: avg.data[0].areaPm,
                         targetPm: avg.data[0].target
-                    }
+                    };
 
                 }));
         },
 
         // 水质监测 
         getWater() {
-            let ajaxs = [getCqwiRank(), getPoint(), getRate("1"), getRate("2")];
+            let ajaxs = [getCqwiRank(), getPoint(), getRate()];
             this.$http.all(ajaxs)
-            .then(this.$http.spread( (cqwi, point, drate, yrate) => {
+            .then(this.$http.spread( (cqwi, point, drate) => {
                 
                 const isNull = Object.prototype.toString.call(point.data.data) == '[object Null]' ? true : false;
                 this.dash = {
@@ -226,12 +282,12 @@ export default {
                     realValue: isNull ? '' : point.data.data.realValue,
                     standerValue: isNull ? '' : point.data.data.standerValue,
                     dbsRate: drate.data.data[0].dbsRate,
-                    yysRate: yrate.data.data[0].yysRate
+                    yysRate: drate.data.data[0].yysRate
                 };
 
             }));
         },
-
+        
         // 获取空气质量aqi
         getAirChart() {
             // 获取所有区县
@@ -240,7 +296,7 @@ export default {
                 var obj = {
                     areaId: '',
                     years: '2018',
-                    month: '3'
+                    month: '03'
                 }
                 res.data.map(value => {
                     obj.areaId = value.areaId;
@@ -249,7 +305,7 @@ export default {
 
                 // 获取空气质量图数据
                 // console.log(arr)
-                this.$http.post('http://172.21.92.143:8080/airinfo/getqualitydays', arr)
+                this.$http.post('http://172.21.92.62:8080/airinfo/getqualitydays', arr)
                     .then(res => {
                         
                         let bads, goods, mids;
@@ -283,11 +339,7 @@ export default {
                 // console.log('pmdata', this.pmChartData)
             })
         },
-
-        getCwqi() {
-            // console.log('获取cwqi排名')
-            this.$service.getCWQI()
-        }
+        
 
     },
     created() {

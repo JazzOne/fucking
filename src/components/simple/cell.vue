@@ -1,7 +1,8 @@
 <template>
   <div class="y-cell" card>
       <div class="left">
-          <img src="@/assets/logo.png" alt="">
+          <!-- {{list.attachmentChild[0].attachmentAddress}} -->
+          <img v-if="list.attachmentChild[0]" :src="list.attachmentChild[0].attachmentAddress" alt="">
       </div>
       <div class="right">
           <div>
