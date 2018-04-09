@@ -28,11 +28,10 @@ export default {
     // },
     data() {
         return {
-            
         }
     },
     created() {
-        
+        // this.$echarts.init(document.querySelector('.myChart')).clear()
     },
     mounted() {
         this.$nextTick(() => {
@@ -45,8 +44,8 @@ export default {
     methods: {
         drawLine() {
             
-            
             let myChart = this.$echarts.init(document.querySelector('.myChart'))
+            
             let option = {
                 dataZoom: [
                     {
@@ -145,8 +144,10 @@ export default {
                     }
                 }]
             };
+
+            
             myChart.setOption(option);
-            // console.log(this.time)
+            
         },
     }
 }

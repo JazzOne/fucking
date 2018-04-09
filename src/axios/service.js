@@ -4,7 +4,7 @@ import axios from 'axios';
 // 首页ajax基础参数
 // 172.21.92.62
 let indexUrl = 'http://172.21.92.62:8080',
-    otherUrl = 'http://172.21.92.62:8080/enterpiseInfo';
+    otherUrl = '/enterpiseInfo';
 let datetime = new Date(),
     year = datetime.getFullYear(),
     // month = datetime.getMonth() + 1,
@@ -35,6 +35,9 @@ const fetch = {
     // 获取空气质量AQI
     getAQI(size = 1) {
         return new Promise((resolve, reject) => {
+            api.get(`${indexUrl}/airinfo/getallavgpmofyears`).then(res => {
+                console.log(res)
+            })
             api.post(`${indexUrl}/airinfo/getaqi`,{
                 years: String(year),
                 month: String(month),
@@ -60,20 +63,21 @@ const fetch = {
         // console.log(month)
         return this.getAreaId().then(res => {
             
-            let obj = {
-                "years": String(year),
-                "month": "03",
-                "areaId": ""
-            };
+            
             let arr = [];
             res.data.forEach(value => {
+                var obj = {
+                    "years": String(year),
+                    "month": String(month),
+                    "areaId": ""
+                };
                 obj.areaId = value.areaId;
                 arr.push(obj)
             });
             
             // console.log(arr, 'cwqi请求参数')
 
-            return api.post('http://172.21.92.62:8080/waterinfo/getcqwiInfolist', arr)
+            return api.post('/waterinfo/getcqwiInfolist', arr)
             //    .then(res => {
             //      console.log(res, 'cwqi排名')
             //    });
@@ -106,26 +110,27 @@ export function getGoodDay() {
 
 // 获取平均浓度
 export function getPmAvg(params) {
-    // 先获取所有地区的areaid
-    // return fetch.getAQI().then(res => {
-    //     let areaIds = [],
-    //         obj = {};
-    //     res.forEach(element => {
-    //         if(Object.prototype.toString.call(element) !== '[object Null]') {
-    //             obj = {
-    //                 areaId: String(element.areaId),
-    //                 years: element.years
-    //             } 
-    //             areaIds.push(obj)
-    //         }
-    //     });
-    //     // return api.post(`${indexUrl}/airinfo/getavgpmofyears`, areaIds);
-    // })
+    //先获取所有地区的areaid
+    return fetch.getAQI('13').then(res => {
+        let areaIds = [];
+        res.forEach(element => {
+            if(Object.prototype.toString.call(element) !== '[object Null]') {
+                var obj = {
+                    areaId: String(element.areaId),
+                    years: element.years
+                } 
+                areaIds.push(obj)
+            }
+        });
+        console.log(areaIds);
+        return api.post(`${indexUrl}/airinfo/getavgpmofyears`, areaIds);
+        // return api.post(`${indexUrl}/airinfo/getavgpmofyears`, areaIds);
+    })
 
-    return api.post(`${indexUrl}/airinfo/getavgpmofyears`, [{
-        years: String(year),
-        areaId: '500153'
-    }]);
+    // return api.post(`${indexUrl}/airinfo/getavgpmofyears`, [{
+    //     years: String(year),
+    //     areaId: '500153'
+    // }]);
     
 }
 
@@ -133,7 +138,7 @@ export function getPmAvg(params) {
 export function getCqwiRank() {
     return api.post(`${indexUrl}/waterinfo/getcqwipm`, {
         "years": String(year),
-        "month": "03",
+        "month": String(month),
         "areaId": "500153"
     })
 }
@@ -141,18 +146,21 @@ export function getCqwiRank() {
 // 获取超标指数
 // 默认获取地表
 export function getPoint() {
-    return axios.post('http://172.21.92.62:8080/waterinfo/getchaobiaoyz', {
+    return axios.post('/waterinfo/getchaobiaoyz', {
         "mn":"98333426611001"
     })
 }
 // 获取水质达标率
 // 默认获取地表水达标率
 export function getRate() {
-    return axios.post('http://172.21.92.62:8080/waterinfo/getwaterrate', {
+    
+    return axios.post('/waterinfo/getratelist', {
         years: String(year),
         areaId: "500153",
         // type: type  // 地表水（1） 饮用水（2）
     })
+
+    
 }
 
 

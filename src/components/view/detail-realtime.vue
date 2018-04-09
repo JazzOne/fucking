@@ -52,7 +52,67 @@
       </div>
 
     </template>
-    
+    <!-- 空气站 -->
+    <template v-if=" $route.query.type == '3' ">
+      <div card>
+        <div cell>
+          <span>PM2.5</span>
+          <span>{{listInfo.pm25}}ug/m³</span>
+        </div>
+        <div cell>
+          <span>PM10</span>
+          <span>{{listInfo.pm10}}ug/m³</span>
+        </div>  
+        <div cell>
+          <span>SO2</span>
+          <span>{{listInfo.so2}}ug/m³</span>
+        </div> 
+        <div cell>
+          <span>NO2</span>
+          <span>{{listInfo.no2}}ug/m³</span>
+        </div> 
+        <div cell>
+          <span>O3</span>
+          <span>{{listInfo.o3}}ug/m³</span>
+        </div> 
+        <div cell>
+          <span>CO</span>
+          <span>{{listInfo.co}}mg/m³</span>
+        </div>
+        <div cell>
+          <span>TVOC</span>
+          <span>{{listInfo.tvoc ? listInfo.tvoc : '--'}}</span>
+        </div>
+        <div cell>
+          <span>大气压</span>
+          <span>{{listInfo.apress}}</span>
+        </div>
+        <div cell>
+          <span>温度</span>
+          <span>{{listInfo.temperature}}℃</span>
+        </div>
+        <div cell>
+          <span>湿度</span>
+          <span>{{listInfo.humidity}}%PH</span>
+        </div>
+        <div cell>
+          <span>风向</span>
+          <span>{{listInfo.wdirect}}</span>
+        </div>
+        <div cell>
+          <span>风速</span>
+          <span>{{listInfo.wspeed}}</span>
+        </div>
+        <div cell>
+          <span>雨量</span>
+          <span>--</span>
+        </div>
+        <div cell>
+          <span>噪声</span>
+          <span>--</span>
+        </div>
+      </div>
+    </template>
 
 
   </div>
@@ -83,38 +143,67 @@ export default {
   created() {
     this.$nextTick(() => {
 
-    
-    if(this.$route.query.type == 2) {  // 水质站
-      let id =localStorage.getItem('id');
-      this.$http.post(`http://172.21.92.62:8080/enterpiseInfo/monitor/2/${id}`)
-          .then(res => {
-            console.log(res)
-            let data = res.data.data;
+      if(this.$route.query.type == 2) {  // 水质站
+        let id =localStorage.getItem('id');
+        this.$http.post(`/enterpiseInfo/monitor/2/${id}`)
+            .then(res => {
+              console.log(res)
+              let data = res.data.data;
 
-            this.listtitle = data;
+              this.listtitle = data;
 
-            this.listInfo = data.equipments;
+              this.listInfo = data.equipments;
 
-            console.log(data.reals)
-            // 中间的图表
-            let avgs = [],
-                times = [];
-            data.reals.map(value => {
-              avgs.push(value.avg);
-              times.push(value.time);
-            });
-            this.list = avgs;
-            this.time = times;
+              console.log(data.reals)
+              // 中间的图表
+              let avgs = [],
+                  times = [];
+              data.reals.map(value => {
+                avgs.push(value.avg);
+                times.push(value.time);
+              });
+              this.list = avgs;
+              this.time = times;
 
-            this.listTrue = false;
-            setTimeout(()=>{
-              this.listTrue = true
-            },10);
-            
+              this.listTrue = false;
+              setTimeout(()=>{
+                this.listTrue = true
+              },10);
+              
 
 
-          })
-    }
+            })
+      }else if(this.$route.query.type == 3) {
+
+        // 实时监控图表数据
+        this.$http.post(`http://172.21.92.248:8080/air/AQI/${this.$route.query.baseEnterpriseId}`).then(res => {
+          // console.log(res.data.data)
+          let data = res.data.data,
+              time = [],
+              list = [];
+              
+          data.forEach(element => {
+            time.push(element.time)
+            list.push(element.AQI)
+          });
+          
+          this.time = time; 
+          this.list = list;
+        })
+
+        // 下半部分因子
+        this.$http.get(`http://172.21.92.248:8080/air/station`, {
+          params: {
+            enterprseId:this.$route.query.baseEnterpriseId
+          }
+        }).then(res => {
+          this.listInfo = res.data.data;
+        });
+
+
+
+
+      }
     })
   },
   mounted() {
@@ -138,7 +227,7 @@ export default {
       let query = this.$route.query,
           id =  localStorage.getItem('id')
       
-      this.$http.get(`http://172.21.92.62:8080/enterpiseInfo/monitor/${type}/${id}`)
+      this.$http.get(`/enterpiseInfo/monitor/${type}/${id}`)
       .then(res => {
         
         let data = res.data.data;
@@ -171,7 +260,7 @@ export default {
     // 工程监控
     getGC(type) {
       let id = localStorage.getItem('id');
-      this.$http.get(`http://172.21.92.62:8080/enterpiseInfo/monitor/${type}/${id}`)
+      this.$http.get(`/enterpiseInfo/monitor/${type}/${id}`)
           .then(res => {
             let data = res.data.data;
             // 顶部的标题

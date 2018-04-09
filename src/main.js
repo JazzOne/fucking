@@ -18,7 +18,9 @@ Vue.prototype.$echarts = echarts
 // 引入ajax库
 import axios from 'axios'
 Vue.prototype.$http = axios
-Vue.prototype.url = 'http://172.21.92.248:8080'
+
+axios.defaults.baseURL = 'http://172.21.92.62:8080';
+Vue.prototype.$url = 'http://172.21.92.248:8080'
 import fetch from '@/axios/service'
 Vue.prototype.$service = fetch;
 

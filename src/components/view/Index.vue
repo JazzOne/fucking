@@ -8,9 +8,13 @@
     </y-header>
 
     <y-tabs class="navMenus" dark :tabs="navMenus" @change="changeNavMenu"></y-tabs>
+    
     <!-- 8张图表 -->
     <div v-if="lineData && navMenus[navMenuIndex].type == 'aqi'">
-        <echart-line :time="genarateArray(lineData.length)" :datalist="lineData"></echart-line>
+        <echart-line 
+            :time="genarateArray(lineData.length)" 
+            :datalist="lineData"
+            v-if="aqishow"></echart-line>
     </div>
     <div v-else-if="navMenus[navMenuIndex].type == 'air'">
         <echart-bar :xData="xData" :data="barData"></echart-bar>
@@ -42,7 +46,6 @@
     <div v-else-if="navMenus[navMenuIndex].type == 'drink'">
         
         <echart-line 
-            
             :time="yystime" 
             :datalist="yysData"
             v-if="yys">
@@ -118,7 +121,8 @@ export default {
             navMenuIndex: 0,        
             
             // 图表
-            lineData: null, 
+            lineData: null,
+            aqishow: false,
             // 空气质量
             barData: {
                 bads: [],
@@ -138,7 +142,8 @@ export default {
             // 饮用水
             yystime: null,
             yysData: [],
-            yys: false
+            yys: false,
+
         }
     },
     computed: {
@@ -173,30 +178,37 @@ export default {
         // 切换顶部菜单
         changeMenu(index) {
             this.menuIndex = index;
-            this.changeNavMenu(0); 
+            
 
             if(this.menuIndex == 0) {
                 this.getAirMain()
             }else {
                 this.getWater()
             }
+
+            this.changeNavMenu(0);
+            
+             
         },
         // 切换顶部子菜单
         // 子菜单的变化会引起图表渲染变化  
         changeNavMenu(index) {
+            
             this.navMenuIndex = index;
             // console.log(this.navMenus[this.navMenuIndex].type + '图表')
             let type = this.navMenus[this.navMenuIndex].type;
             switch(type) {
                 case 'aqi':
-                    this.$service.getAQI("7").then(res => {
+                    this.$service.getAQI('24').then(res => {
                         let arr = res.filter(value => {
                             return Object.prototype.toString.call(value) !== '[object Null]'
                         }).map(value => {
-                            return value.areaPm;
+                            return value.areaAqi;
                         })
-                        this.lineData = arr
-                        // console.log(this.lineData)
+                        this.lineData = arr;
+                        this.aqishow = true;
+                        this.dbs = false;
+                        this.yys = false;
                     });
                 break;
                 case 'air':
@@ -215,6 +227,7 @@ export default {
                 break;
                 case 'driver':
                     getRate().then(res => {
+                        console.log(res)
                         let time = [], datas = [];
                         let data = res.data.data;
                         
@@ -226,6 +239,7 @@ export default {
                         this.dbsData = datas;
                         this.dbs = true;
                         this.yys = false;
+                        this.aqishow = false;
                         
                     })
                 break;
@@ -242,6 +256,8 @@ export default {
                         this.yysData = datas;
                         this.yys = true;
                         this.dbs = false;
+                        this.aqishow = false;
+                        
                         
                     })
                 break;
@@ -255,10 +271,10 @@ export default {
             this.$http.all(ajaxs)
                 .then(this.$http.spread( (pm, rank, days, avg) => {
                     // console.log(pm[0].areaPm, rank.data, days.data, avg.data[0])
-                    console.log(rank.data)
+                    
                     this.dash = {
                         rank: rank.data,
-                        pm: pm[0].areaPm,
+                        pm: pm[0].areaAqi,
                         restDays : days.data.restDays,
                         gooddays: days.data.gooddays,
                         targetdays: days.data.targetdays,
@@ -274,15 +290,25 @@ export default {
             let ajaxs = [getCqwiRank(), getPoint(), getRate()];
             this.$http.all(ajaxs)
             .then(this.$http.spread( (cqwi, point, drate) => {
-                
+                console.log(cqwi)
+                let month = new Date().getMonth() + 1;
+                var drate;
+                drate.data.data.forEach(value => {
+                    // console.log(value)
+                    if(value.month == month) {
+                        // console.log(value)
+                        drate = value
+                    }
+                })
+
                 const isNull = Object.prototype.toString.call(point.data.data) == '[object Null]' ? true : false;
                 this.dash = {
                     rank: cqwi.data.pm,
                     zsName: isNull ? '' : point.data.data.name,
                     realValue: isNull ? '' : point.data.data.realValue,
                     standerValue: isNull ? '' : point.data.data.standerValue,
-                    dbsRate: drate.data.data[0].dbsRate,
-                    yysRate: drate.data.data[0].yysRate
+                    dbsRate: drate.dbsRate,
+                    yysRate: drate.yysRate
                 };
 
             }));
@@ -290,27 +316,32 @@ export default {
         
         // 获取空气质量aqi
         getAirChart() {
+            let datetime = new Date(),
+            year = datetime.getFullYear(),
+            // month = datetime.getMonth() + 1,
+            month = (datetime.getMonth() + 1) < 10 ? '0' + (datetime.getMonth() + 1) : (datetime.getMonth() + 1),
+            day = datetime.getDate();
             // 获取所有区县
             this.$service.getAreaId().then(res => {
                 var arr = [];
-                var obj = {
-                    areaId: '',
-                    years: '2018',
-                    month: '03'
-                }
+                console.log(res)
                 res.data.map(value => {
+                    var obj = {
+                        areaId: String(value.areaId),
+                        years: String(year),
+                        month: String(month)
+                    }
                     obj.areaId = value.areaId;
                     arr.push(obj)
                 });
 
                 // 获取空气质量图数据
                 // console.log(arr)
-                this.$http.post('http://172.21.92.62:8080/airinfo/getqualitydays', arr)
+                this.$http.post('/airinfo/getqualitydays', arr)
                     .then(res => {
                         
-                        let bads, goods, mids;
+                        let bads = [], goods = [], mids = [];
                         let xData = [];
-                        bads = goods =  mids = [];
                         res.data.data.map(value => {
                             xData.push(value.areaName)
                             bads.push(value.baddas)
@@ -319,12 +350,14 @@ export default {
                         })
                         this.xData = xData;
 
-
+                        // this.barData = res.data;
                         var obj = {
                             bads,
                             goods, 
                             mids
                         }
+                        console.log(obj)
+
                         this.barData = obj;
                     });
 
@@ -336,7 +369,7 @@ export default {
         getPM() {
             getPmAvg().then(res => {
                 this.pmChartData = res.data;
-                // console.log('pmdata', this.pmChartData)
+                console.log('pmdata', this.pmChartData)
             })
         },
         

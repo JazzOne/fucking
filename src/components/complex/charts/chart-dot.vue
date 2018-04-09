@@ -6,7 +6,7 @@
             <span>24小时监控</span>    
         </div> 
         <div class="right">
-            <span href="javascript: void(0)" class="calendarBtn">3月</span>
+            <span href="javascript: void(0)" class="calendarBtn">{{month}}月</span>
         </div>
     </div>
     <div class="myChart"></div>
@@ -20,7 +20,8 @@ export default {
     name: 'chart-dot',
     data() {
         return {
-            cwqi: [],   
+            cwqi: [], 
+            month: new Date().getMonth()+1  
         }
     },
     computed: {
@@ -43,14 +44,46 @@ export default {
         getData() {
             this.$service.getCWQI().then(res => {
                 this.cwqi = res.data;
-                // console.log(this.cwqi)
+                // console.log(this.cwqi, 'cwqi排名')
                 this.initChart()
             })
         },
         initChart(){
-            console.log(this.cwqi)
             let myChart = this.$echarts.init(document.querySelector('.myChart'))
             let option = {
+                dataZoom: [
+                    {
+                        type: "slider",
+                        show: false,
+                        orient: "horizontal",
+                        filterMode: "none",
+                        start: 0,
+                        end: 60,
+                        zoomLock: true,
+                        borderColor: "#fff",
+                        dataBackground: {
+                            lineStyle: {
+                                opacity: 0
+                            },
+                            areaStyle: {
+                                opacity: 0
+                            }
+                        },
+                        labelFormatter: "",
+                        handleStyle: {
+                            opacity: 0
+                        },
+                        bottom: -25
+                    },
+                    {
+                        type: "inside",
+                        orient: "horizontal",
+                        filterMode: "none",
+                        start: 0,
+                        end: 100,
+                        zoomLock: true,
+                    }
+                ],
                 color: ['#3398DB'],
                 tooltip : {
                     trigger: 'axis',

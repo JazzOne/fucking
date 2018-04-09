@@ -128,7 +128,7 @@
             </div>
         </div>
     </template>
-    <template v-else-if="$route.query.type == '2' || $route.query.type == '3'">
+    <template v-else-if="$route.query.type == '2'">
         <div class="info" card >
             <div cell>
                 <span>站点名称</span>
@@ -165,6 +165,47 @@
             </div>
             <div cell>
                 <span>运维负责人联系电话</span>
+                <span>{{infos.envHeadPhone ? infos.envHeadPhone : '--'}}</span>
+            </div>
+        </div>
+    </template>
+
+    <template v-else-if="$route.query.type == '3'">
+        <div class="info" card>
+            <div cell>
+                <span>站点名称</span>
+                <span>{{infos.name}}</span>
+            </div>
+            <div cell>
+                <span>站点类型</span>
+                <span>{{infos.controlLevel}}</span>
+            </div>
+            <div cell>
+                <span>监控区域</span>
+                <span>--</span>
+            </div>
+            <div cell>
+                <span>安装位置</span>
+                <span>{{infos.address}}</span>
+            </div>
+            <div cell>
+                <span>经度</span>
+                <span>{{infos.lon}}</span>
+            </div>
+            <div cell>
+                <span>纬度</span>
+                <span>{{infos.lat}}</span>
+            </div>
+            <div cell>
+                <span>运维单位</span>
+                <span>--</span>
+            </div>
+            <div cell>
+                <span>运维负责人</span>
+                <span>{{infos.envHead ? infos.envHead : '--'}}</span>
+            </div>
+            <div cell>
+                <span>运维负责人联系方式</span>
                 <span>{{infos.envHeadPhone ? infos.envHeadPhone : '--'}}</span>
             </div>
         </div>
@@ -228,7 +269,7 @@ export default {
                                 
                 // break;
                 case 1:
-                    this.$http.get(`http://172.21.92.62:8080/enterpiseInfo/swage/${id}`)
+                    this.$http.get(`/enterpiseInfo/swage/${id}`)
                         .then(res => {
                             if(Object.prototype.toString.call(res.data) == '[object Null]') {
                                 console.log('暂无排污许可证')
@@ -240,7 +281,7 @@ export default {
                 break;
                 case 2:
                     // console.log('工艺流程图')
-                    this.$http.get(`http://172.21.92.62:8080/enterpiseInfo/drawing/${id}`)
+                    this.$http.get(`/enterpiseInfo/drawing/${id}`)
                         .then(res => {
                             if(Object.prototype.toString.call(res.data) == '[object Null]') {
                                 console.log('无工艺流程图')

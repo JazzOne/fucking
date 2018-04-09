@@ -1,8 +1,17 @@
 <template>
   <div class="y-cell" card>
-      <div class="left">
+
+      
+      <div class="left"  v-if="list.attachmentChild">
           <!-- {{list.attachmentChild[0].attachmentAddress}} -->
           <img v-if="list.attachmentChild[0]" :src="list.attachmentChild[0].attachmentAddress" alt="">
+            <img v-else src="http://113.204.228.66:8010/test/static/rc_app/default/D6ACAFBC-9D99-476f-B867-D13C83B43C97.png">
+        
+      </div>
+      <div class="left" v-if="list.attachmentList">
+          
+          <img v-if="list.attachmentList[0]" :src="list.attachmentList[0].attachmentAddress" alt="">
+            <img v-else src="http://113.204.228.66:8010/test/static/rc_app/default/D6ACAFBC-9D99-476f-B867-D13C83B43C97.png">
       </div>
       <div class="right">
           <div>

@@ -7,7 +7,7 @@
             <span>24小时监控</span>    
         </div> 
         <div class="right">
-            <span href="javascript: void(0)" class="calendarBtn">3月</span>
+            <span href="javascript: void(0)" class="calendarBtn">{{month}}月</span>
         </div>
     </div>
     <div class="myChart"></div>
@@ -25,12 +25,22 @@ export default {
             type: Array
         }
     },
+    data() {
+        return {
+            month: new Date().getMonth() + 1
+                
+        }
+    },
     methods: {
         createCharts() {
+            
             let myChart = this.$echarts.init(document.querySelector('.myChart'))
             let option = {
                 trigger: "axis", 
-                tooltip: { },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{c}'
+                },
                 axisPointer : {  // 坐标轴指示器，坐标轴触发有效
                     type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
                 },
@@ -41,7 +51,7 @@ export default {
                         orient: "horizontal",
                         filterMode: "none",
                         start: 0,
-                        end: 50,
+                        end: 40,
                         zoomLock: true,
                         borderColor: "#fff",
                         dataBackground: {
@@ -107,7 +117,7 @@ export default {
                         name: '',
                         barWidth: 25, //柱图宽度
                         type: 'bar',
-                        stack:'使用情况',
+                        stack: '使用情况',
                         data: this.data.bads,
                         itemStyle:{
                             normal: {color:"#d4f1fa"},
@@ -135,6 +145,9 @@ export default {
             };
 
             myChart.setOption(option);
+            myChart.on('click',function(val){
+                console.log(val)
+            })
         },
     },
     created() {

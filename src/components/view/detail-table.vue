@@ -12,13 +12,16 @@
         <img src="@/assets/logo.png" slot="right" style="width: 10.6667vw">
     </y-header>
 
-    <y-tabs dark :tabs="tableType" style="margin: 2vw 0;" @change="changeTable"></y-tabs>
+    <y-tabs 
+    dark 
+    :tabs="tableType" 
+    style="margin: 2vw 0;" 
+    @change="changeTable"></y-tabs>
 
     
 
     <div class="table" card>
         <div class="title" cell>
-            
             <span>{{tableData.total}}条{{tableType[tableIndex].name}}</span>
             <span>{{vtime}}</span>
         </div>
@@ -79,6 +82,38 @@
                     </tr>
                 </tbody>
             </table>
+            <!-- 空气站 -->
+            <table id="mytable" v-if="$route.query.type == 3">
+                <thead>
+                    <tr>
+                        <td>时间</td>
+                        <!-- <td>AQI</td> -->
+                        <td>PM2.5(ug/m³)</td>
+                        <td>PM10(ug/m³)</td>
+                        <td>SO2(ug/m³)</td>
+                        <td>NO2(ug/m³)</td>
+                        <td>O3(ug/m³)</td>
+                        <td>CO(ug/m³)</td>
+                        <td>TVOC(ppb)</td>
+                        <td>温度(℃)</td>
+                        <td>湿度(%HR)</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(cell, index) in airList" :key="index">
+                        <td>{{cell.time}}</td>
+                        <td>{{cell.pm25}}</td>
+                        <td>{{cell.pm10}}</td>
+                        <td>{{cell.so2}}</td>
+                        <td>{{cell.no2}}</td>
+                        <td>{{cell.o3}}</td>
+                        <td>{{cell.co}}</td>
+                        <td>{{cell.tvoc}}</td>
+                        <td>{{cell.temperature}}</td>
+                        <td>{{cell.humidity}}</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -97,7 +132,8 @@ export default {
         return {
             tableType: [{ name: '日报' }, { name: '月报' }, { name: '年报'}],
             tableIndex: 0,
-            tableData: []
+            tableData: [],
+            airList: []
         }
     },
     computed: {
@@ -129,19 +165,45 @@ export default {
 
         // 切换报表 
         changeTable(index) {
-            this.tableIndex = index;
-            console.log(index)
-            this.$service.getTable({
-                id: this.$route.query.id,
-                date: this.vtime,
-                pageNo: 1,
-                pageSize: 100  // 设置最大化，简化做分页的交互
-            }).then(res => {
-                console.log(res.data)
-                this.tableData = res.data;
+            
+            
+            if(this.$route.query.type == 3) {   // 
+                console.log(index, this.$route.query.id)
+                if(index == 0) {
+                    this.$http.post(`http://172.21.92.248:8080/air/day/${this.$route.query.id}`)
+                              .then(res => {
+                                  console.log(res.data.data)
+                                  this.airList = res.data.data
+                              })
+                }else if(index == 1) {
+                    this.$http.post(`http://172.21.92.248:8080/air/month/${this.$route.query.id}`)
+                              .then(res => {
+                                  console.log(res.data.data)
+                                  this.airList = res.data.data
+                              })
+                }else {
+                    this.$http.post(`http://172.21.92.248:8080/air/year/${this.$route.query.id}`)
+                              .then(res => {
+                                  console.log(res.data.data)
+                                  this.airList = res.data.data
+                              })
+                }
 
 
-            })
+            }else {
+                this.tableIndex = index;
+                console.log(index)
+                this.$service.getTable({
+                    id: this.$route.query.id,
+                    date: this.vtime,
+                    pageNo: 1,
+                    pageSize: 100  // 设置最大化，简化做分页的交互
+                }).then(res => {
+                    console.log(res.data)
+                    this.tableData = res.data;
+                })
+            }
+
         }
     },
     created() {

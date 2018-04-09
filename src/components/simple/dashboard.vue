@@ -52,7 +52,7 @@
     <template v-if="type == 1">
         <div class="main">
             <div>
-                <span style="font-size: 4.5vw; color: #ff2a89; font-weight: bold;">万林镇断面</span>
+                <span style="font-size: 4.5vw; color: #ff2a89; font-weight: bold;">万灵镇断面</span>
                 <p style="padding: 2vw">超标断面</p>
                 </div>
                 <div>
@@ -66,8 +66,9 @@
         <div class="list">
             <div class="item">
                 <span text-left>
+                    
                     <p style="font-size: 3.7333vw">水质CWQI排名</p>
-                    <p style="font-size: 2.9333vw">上月排名：{{datas.rank.nowpm}}</p>
+                    <p style="font-size: 2.9333vw">{{datas.rank}}</p>
                 </span>
                 <span text-right>
                     <span style="color: #ffd216; font-size: 6.4vw; font-weight: 400;">{{datas.rank}}</span> / 13
@@ -119,7 +120,7 @@ export default {
         }
     },
     created() {
-        
+        console.log(this.datas)
     },
     mounted(){
         

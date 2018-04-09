@@ -1,5 +1,6 @@
 <template>
   <div class="list" padding>
+      
       <y-header>
         <img src="@/assets/icon/back-icon.png" class="backbtn" slot="left" width="25" height="25" @click="handleback">
         <span>{{title}}<span style="font-size: 3.4667vw;">({{lists.length}}在线)</span></span>
@@ -51,6 +52,7 @@ export default {
     },
     data() {
         return {
+            url: '',
             filterShow: false,
             filters: [
                 {title: '在线状态', list: [{text: '在线'}, {text: '离线'}]},
@@ -94,22 +96,31 @@ export default {
             this.$service.getEnterpiseList(type).then(res => {
                 // 当前企业列表
                 this.lists = res.data;
+                console.log(this.lists, 'lists')
             })
         },
       // 获取空气站列表
         getAtmosphereList() {
-          let url = this.url
-          this.$http.get(url+'/GIS/air/details',{ params:{}})
-          .then(res => {
-            this.lists = res.data.data;
-          })
+            let url = this.$url;
+            console.log(url)
+            this.$http.get(`${url}/air/details`).then(res => {
+                console.log(res)
+                this.lists = res.data.data;
+                console.log(this.lists, 'lists')
+                
+            })
+        //   let url = this.url
+        //   this.$http.get(url+'/GIS/air/details',{ params:{}})
+        //   .then(res => {
+        //     this.lists = res.data.data;
+        //   })
         },
         clickFilter(index) {
             this.currentIndex = index;
         }
     },
     created() {
-        // console.log(this.$route.query.name)
+        console.log(this.$route.query.name)
       if(this.$route.query.name == 3){
         this.getAtmosphereList()
       }else {

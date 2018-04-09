@@ -11,13 +11,33 @@
         <img src="@/assets/logo.png" slot="right"  style="width: 10.6667vw">
     </y-header>
 
-    <swiper :options="swiperOption" class="y-swiper">
-        <swiper-slide v-for="(n, i) in detail.attachmentChild" :key="i">
-            <img :src="n.attachmentAddress" alt="">
-            <!-- {{n}} -->
-        </swiper-slide>
-        <div class="swiper-pagination" slot="pagination"></div>
-    </swiper>
+    <div v-if="detail.attachmentChild">
+        <swiper :options="swiperOption" class="y-swiper" v-if="detail.attachmentChild.length > 0">
+            
+            <swiper-slide v-for="(n, i) in detail.attachmentChild" :key="i">
+                <img :src="n.attachmentAddress" alt="">
+                <!-- <div v-if="n.attachmentAddress">{{n.attachmentAddress}}</div>
+                <div v-else>暂无</div> -->
+            </swiper-slide>
+            <!-- <swiper-slide v-for="(n, i) in detail.attachmentList" :key="i">
+                {{n.attachmentAddress ? n.attachmentAddress : 'zanwu'}}
+            </swiper-slide> -->
+
+
+            <div class="swiper-pagination" slot="pagination"></div>
+        </swiper>
+        <img v-if="detail.attachmentChild.length == 0" src="http://113.204.228.66:8010/test/static/rc_app/default/2DF632B0-CAAA-4059-81FF-CB24F22FAC6F.png" alt="">
+    </div>
+    <div v-if="detail.attachmentList">
+        <swiper :options="swiperOption" class="y-swiper" v-if="detail.attachmentList.length > 0">
+            <swiper-slide v-for="(n, i) in detail.attachmentList" :key="i">
+                <img :src="n.attachmentAddress" alt="">
+            </swiper-slide>
+            <div class="swiper-pagination" slot="pagination"></div>
+        </swiper>
+        <img v-if="detail.attachmentList.length == 0" src="http://113.204.228.66:8010/test/static/rc_app/default/2DF632B0-CAAA-4059-81FF-CB24F22FAC6F.png" alt="">
+    </div>
+
 
     <div class="cells" card>
         <div class="cell"
@@ -57,7 +77,7 @@ export default {
                 { text: '实时数据', url: '/realtime' },
                 { text: '站点视频', url: '' },
                 { text: '统计', url: '/table' },
-                { text: '报警', url: '/warn' },
+                { text: '报警', url: '' },
                 { text: '现场', url: '' }
             ],
         }
@@ -71,11 +91,9 @@ export default {
             this.detail.type = this.$route.params.type;
             this.detail.id = this.$route.params.detail_id;
 
-            // console.log(this.detail.type, '===============////////////////////')
             this.$router.push({
                 path: cell.url,
-                query: this.detail
-                
+                query: this.detail                
                 // query: {
                 //     id: this.$route.params.detail_id,
                 //     type: this.$route.params.type
@@ -85,16 +103,17 @@ export default {
         // 获取企业详情信息
         getDetail() {
           let params = this.$route.params;
-          console.log(params)
-          if(params.type == 3){
-            let url = this.url
-            this.$http.get(url+'/GIS/air/one/details',{ params:{
-              id:params.detail_id
+          if(params.type == 3){ // 空气站
+            console.log('空气站', params)
+            let url = this.$url;
+            this.$http.get(url+'/air/one/details',{ params:{
+              id: params.detail_id
             }}).then(res => {
                 this.detail = res.data.data;
+                console.log(this.detail)
             })
-          }else {
-            this.$http.get(`http://172.21.92.62:8080/enterpiseInfo/info/${params.type}/${params.detail_id}`)
+          }else {  // 
+            this.$http.get(`/enterpiseInfo/info/${params.type}/${params.detail_id}`)
               .then(res => {
                 this.detail = res.data.data;
                 console.log('水质站或者污染企业', this.detail)
@@ -104,6 +123,7 @@ export default {
         }
     },
     created() {
+        
         this.getDetail()
     }
 }
