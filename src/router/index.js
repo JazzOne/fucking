@@ -40,6 +40,7 @@ export default new Router({
     {
       path: '/list/:type/detail/:detail_id',
       component: Detail
+      
     },
     // 基本信息
     {
